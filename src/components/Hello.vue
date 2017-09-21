@@ -1,16 +1,24 @@
 <template lang="pug">
   .hello
-    h1 StuV Kalendar
-    button(v-on:click="parseCalendar()") update
+    h1 StuV Kalendar - INF16B
+    button(v-on:click="parseCalendar()") Aktualisieren
+    p(v-if="getEventsGroupedByDate")
+
+    br
 
     ul.list
-      li(v-for="(event, index) in getEvents")
-        p.summary(v-text="getAttribute('summary', index)")
-        p.dozent(v-text="getAttribute('description', index)")
-        p.location(v-text="getAttribute('location', index)")
-        p(v-text="formatDateHourMinutes(getAttribute('dtstart', index)) + ' - ' + formatDateHourMinutes(getAttribute('dtend', index))")
-        p(v-text="formatDateLong(getAttribute('dtstart', index))")
-        p(v-text="timeUntilEnd(getAttribute('dtstart', index), getAttribute('dtend', index))")
+      div(v-for="(eventsInOneDay, i) in getEventsGroupedByDate")
+        p(v-text="formatDateLong(getAttribute('dtstart', eventsInOneDay[0][3].originalIndex))")
+
+        li.test(v-for="(event, j) in eventsInOneDay")
+          div
+            p.summary(v-text="getAttribute('summary', event[3].originalIndex)")
+            p.dozent(v-text="getAttribute('description', event[3].originalIndex)")
+            p.location(v-text="getAttribute('location', event[3].originalIndex)")
+            p(v-text="formatDateHourMinutes(getAttribute('dtstart', event[3].originalIndex)) + ' - ' + formatDateHourMinutes(getAttribute('dtend', event[3].originalIndex))")
+
+            p(v-text="timeUntilEnd(getAttribute('dtstart', event[3].originalIndex), getAttribute('dtend', event[3].originalIndex))")
+
 
 </template>
 
@@ -28,6 +36,34 @@
     computed: {
       getEvents () {
         return this.$store.state.events
+      },
+      // Creates a new object with events grouped by the same date, to make the display easier
+      getEventsGroupedByDate () {
+        let start = moment()
+        let groupedEvents = {}
+        for (let i = 0; i < this.$store.state.events.length; i++) {
+          let modifiedEvent = this.getEvents[i]
+
+          // As we are grouping things together, the old indexes are no longer valid, but we need them to get attributes.
+          if (!modifiedEvent.hasOwnProperty('originalindex')) {
+            modifiedEvent.push({'originalIndex': i})
+          }
+
+          // not sure why i + 1 < length specifically, but we have to make sure not to check length+1 for obvious reasons
+          if (i + 1 < this.getEvents.length) {
+            let currentFormattedDate = this.formatDateLong(this.getAttribute('dtstart', i))
+            if (currentFormattedDate === this.formatDateLong(this.getAttribute('dtstart', i + 1))) {
+              if (groupedEvents[currentFormattedDate] === undefined) {
+                groupedEvents[currentFormattedDate] = []
+              }
+
+              groupedEvents[currentFormattedDate].push(modifiedEvent)
+            }
+          }
+        }
+        console.log(groupedEvents)
+        console.log(moment().diff(start, moment()))
+        return groupedEvents
       }
     },
     methods: {
@@ -49,6 +85,10 @@
             return item[3]
           }
         }
+      },
+      printElement (el) {
+        console.log(el)
+        return el
       },
       formatDateHourMinutes (time) {
         return this.$options.filters.formatDateToHour(time)
