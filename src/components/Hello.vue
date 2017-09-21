@@ -2,7 +2,6 @@
   .hello
     h1 StuV Kalendar - INF16B
     button(v-on:click="parseCalendar()") Aktualisieren
-    p(v-if="getEventsGroupedByDate")
 
     br
 
@@ -39,7 +38,10 @@
       },
       // Creates a new object with events grouped by the same date, to make the display easier
       getEventsGroupedByDate () {
-        let start = moment()
+        return this.$store.state.groupedEvents
+      },
+      groupEventsByDate () {
+        console.time('groupEventsByDate')
         let groupedEvents = {}
         for (let i = 0; i < this.$store.state.events.length; i++) {
           let modifiedEvent = this.getEvents[i]
@@ -61,8 +63,7 @@
             }
           }
         }
-        console.log(groupedEvents)
-        console.log(moment().diff(start, moment()))
+        console.timeEnd('groupEventsByDate')
         return groupedEvents
       }
     },
@@ -71,8 +72,10 @@
         this.$http.get('https://stuv.chagemann.de/inf16b.ics').then(response => {
           this.icsData = response.body
 
-          let parsedEvents = Ical.parse(this.icsData)[2].slice(1, -1) //unsure if also applies to other curses
-          this.$store.commit('updateEvents', parsedEvents)
+          let parsedEvents = Ical.parse(this.icsData)[2].slice(1, -1) // not sure if also applies to other curses
+          this.$store.commit('updateEvents', parsedEvents) // do we even need normal events persisted anymore?
+
+          this.$store.commit('updateGroupedEvents', this.groupEventsByDate) // not sure if this should be here
         }, response => {
           console.log(response)
         })
@@ -106,21 +109,21 @@
 </script>
 
 <style scoped lang="stylus">
-h1, h2 {
-  font-weight: normal;
-}
+  h1, h2 {
+    font-weight: normal;
+  }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
 
-a {
-  color: #42b983;
-}
+  a {
+    color: #42b983;
+  }
 </style>

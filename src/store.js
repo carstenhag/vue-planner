@@ -5,13 +5,17 @@ import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
-  plugins: [createPersistedState()],
+  plugins: [createPersistedState({key: 'vuex-stuv'})],
   state: {
-    events: []
+    events: [],
+    groupedEvents: {} // without this it didn't get persisted after a refresh
   },
   mutations: {
     updateEvents (state, payload) {
       state.events = payload
+    },
+    updateGroupedEvents (state, payload) {
+      state.groupedEvents = payload
     }
   }
 })
