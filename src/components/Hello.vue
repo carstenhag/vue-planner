@@ -23,7 +23,6 @@
     name: 'hello',
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App'
       }
     },
     computed: {
@@ -43,7 +42,7 @@
         })
       },
       getAttribute (attribute, index) {
-        var events = this.getEvents[index][1]
+        let events = this.getEvents[index][1]
 
         for (let item of events) {
           if (item[0] === attribute) {
@@ -66,7 +65,6 @@
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
 h1, h2 {
   font-weight: normal;
