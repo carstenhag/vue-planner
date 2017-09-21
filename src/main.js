@@ -4,16 +4,19 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import VueResource from 'vue-resource'
-var moment = require('moment')
+import moment from 'moment'
 
 Vue.config.productionTip = false
 
 Vue.use(VueResource)
 
-Vue.filter('formatDate', function (value) {
-  if (value) {
-    return moment(String(value)).format('hh:mm')
-  }
+Vue.filter('formatDateToHour', function (value) {
+  if (value) return moment(String(value)).format('HH:mm')
+})
+
+Vue.filter('formatDateToMonthDay', function (value) {
+  moment.locale('de')
+  if (value) return moment(String(value)).format('dd. DD.MM.YYYY')
 })
 
 import {store} from './store'

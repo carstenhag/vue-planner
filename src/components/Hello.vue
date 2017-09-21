@@ -1,19 +1,23 @@
 <template lang="pug">
   .hello
     h1 StuV Kalendar
-    button(v-on:click="testCal()") update
+    button(v-on:click="parseCalendar()") update
 
     ul.list
       li(v-for="(event, index) in getEvents")
         p.summary(v-text="getAttribute('summary', index)")
         p.dozent(v-text="getAttribute('description', index)")
         p.location(v-text="getAttribute('location', index)")
-        p(v-text="formatTime(getAttribute('dtstart', 1)) + ' - ' + formatTime(getAttribute('dtend', 1))")
+        p(v-text="formatDateHourMinutes(getAttribute('dtstart', index)) + ' - ' + formatDateHourMinutes(getAttribute('dtend', index))")
+        p(v-text="formatDateLong(getAttribute('dtstart', index))")
+        p(v-text="timeUntilEnd(getAttribute('dtstart', index), getAttribute('dtend', index))")
 
 </template>
 
 <script>
   var Ical = require('ical.js')
+
+  import moment from 'moment'
 
   export default {
     name: 'hello',
@@ -28,14 +32,12 @@
       }
     },
     methods: {
-      testCal () {
+      parseCalendar () {
         this.$http.get('https://stuv.chagemann.de/inf16b.ics').then(response => {
           this.icsData = response.body
 
-          let parsedEvents = Ical.parse(this.icsData)[2].slice(1)
+          let parsedEvents = Ical.parse(this.icsData)[2].slice(1, -1) //unsure if also applies to other curses
           this.$store.commit('updateEvents', parsedEvents)
-
-          //console.log(parsedEvents[1][1][8][3]) // 1 1 8 3  // Line #8, how does this make sense
         }, response => {
           console.log(response)
         })
@@ -49,8 +51,16 @@
           }
         }
       },
-      formatTime (time) {
-        return this.$options.filters.formatDate(time)
+      formatDateHourMinutes (time) {
+        return this.$options.filters.formatDateToHour(time)
+      },
+      formatDateLong (time) {
+        return this.$options.filters.formatDateToMonthDay(time)
+      },
+      timeUntilEnd (startTime, endTime) {
+        if (moment().isBetween(moment(startTime), moment(endTime))) {
+          return 'Vorlesung zuende ' + moment().to(endTime)
+        }
       }
     }
   }
