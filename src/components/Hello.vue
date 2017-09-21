@@ -1,7 +1,7 @@
 <template lang="pug">
   .hello
     h1 StuV Kalendar - INF16B
-    button(v-on:click="parseCalendar()") Aktualisieren!
+    button(v-on:click="parseCalendar()") Aktualisieren
 
     br
 
