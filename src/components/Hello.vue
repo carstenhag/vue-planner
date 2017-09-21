@@ -69,7 +69,7 @@
     },
     methods: {
       parseCalendar () {
-        this.$http.get('https://stuv.chagemann.de/inf16b.ics').then(response => {
+        this.$http.get('https://static.chagemann.de/inf16b.ics').then(response => {
           this.icsData = response.body
 
           let parsedEvents = Ical.parse(this.icsData)[2].slice(1, -1) // not sure if also applies to other curses
