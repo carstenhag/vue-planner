@@ -5,19 +5,19 @@
 
     br
 
-    ul.list
-      div(v-for="(eventsInOneDay, i) in getEventsGroupedByDate")
-        p(v-text="formatDateLong(getAttribute('dtstart', eventsInOneDay[0][3].originalIndex))")
+    table
+      tbody
+        template(v-for="(eventsInOneDay, i) in getEventsGroupedByDate")
+          tr.day
+            td(v-text="formatDateLong(getAttribute('dtstart', eventsInOneDay[0][3].originalIndex))" colspan='4')
 
-        li.test(v-for="(event, j) in eventsInOneDay")
-          div
-            p.summary(v-text="getAttribute('summary', event[3].originalIndex)")
-            p.dozent(v-text="getAttribute('description', event[3].originalIndex)")
-            p.location(v-text="getAttribute('location', event[3].originalIndex)")
-            p(v-text="formatDateHourMinutes(getAttribute('dtstart', event[3].originalIndex)) + ' - ' + formatDateHourMinutes(getAttribute('dtend', event[3].originalIndex))")
+          tr.event(v-for="(event, j) in eventsInOneDay" v-bind:class="{studyday: getAttribute('summary', event[3].originalIndex) === 'Studientag'}")
+            td(v-text="formatDateHourMinutes(getAttribute('dtstart', event[3].originalIndex)) + ' - ' + formatDateHourMinutes(getAttribute('dtend', event[3].originalIndex))")
+            td.summary(v-text="getAttribute('summary', event[3].originalIndex)")
+            td.dozent(v-text="getAttribute('description', event[3].originalIndex)")
+            td.location(v-text="getAttribute('location', event[3].originalIndex)")
 
-            p(v-text="timeUntilEnd(getAttribute('dtstart', event[3].originalIndex), getAttribute('dtend', event[3].originalIndex))")
-
+            //td(v-text="timeUntilEnd(getAttribute('dtstart', event[3].originalIndex), getAttribute('dtend', event[3].originalIndex))")
 
 </template>
 
@@ -58,7 +58,6 @@
               if (groupedEvents[currentFormattedDate] === undefined) {
                 groupedEvents[currentFormattedDate] = []
               }
-
               groupedEvents[currentFormattedDate].push(modifiedEvent)
             }
           }
@@ -69,18 +68,20 @@
     },
     methods: {
       parseCalendar () {
+        console.time('parseCalendar')
         this.$http.get('https://static.chagemann.de/inf16b.ics').then(response => {
           this.icsData = response.body
 
           let parsedEvents = Ical.parse(this.icsData)[2].slice(1, -1) // not sure if also applies to other curses
           this.$store.commit('updateEvents', parsedEvents) // do we even need normal events persisted anymore?
-
+          console.timeEnd('parseCalendar')
           this.$store.commit('updateGroupedEvents', this.groupEventsByDate) // not sure if this should be here
         }, response => {
           console.log(response)
         })
       },
       getAttribute (attribute, index) {
+        // 0.2 - 0.4 ms on mac
         let events = this.getEvents[index][1]
 
         for (let item of events) {
@@ -109,21 +110,17 @@
 </script>
 
 <style scoped lang="stylus">
-  h1, h2 {
-    font-weight: normal;
-  }
 
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
+  table
+    text-align left
+    width 900px
+    margin 0 auto
 
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
+    td
+      padding-left 8px
 
-  a {
-    color: #42b983;
-  }
+  .day td
+    background-color: #D7DADC
+    text-align center
+
 </style>
