@@ -48,23 +48,17 @@
       },
       groupEventsByDate () {
         let t1 = performance.now()
+
         let groupedEvents = {}
-        for (let i = 0; i < this.$store.state.events.length; i++) {
-          let modifiedEvent = this.getEvents[i]
 
-          // As we are grouping things together, the old indexes are no longer valid, but we need them to get attributes.
-          //
-          // takes about 1 sec to push everything, need to remove this
-          //if (!modifiedEvent.hasOwnProperty('originalindex')) {
-          //  modifiedEvent.push({'originalIndex': i})
-          //}
-
-          let currentFormattedDate = this.formatDateLong(this.getAttribute(modifiedEvent, 'dtstart'))
+        for (let event of this.getEvents) {
+          let currentFormattedDate = this.formatDateLong(this.getAttribute(event, 'dtstart'))
           if (groupedEvents[currentFormattedDate] === undefined) {
             groupedEvents[currentFormattedDate] = []
           }
-          groupedEvents[currentFormattedDate].push(modifiedEvent)
+          groupedEvents[currentFormattedDate].push(event)
         }
+
         let t2 = performance.now()
         this.timeGroup = ('' + (t2 - t1)).substring(0, 5)
         return groupedEvents
