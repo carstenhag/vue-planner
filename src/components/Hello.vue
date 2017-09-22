@@ -1,13 +1,12 @@
 <template lang="pug">
   .hello
-    h1 StuV Kalendar - INF16B
-    button(v-on:click="parseCalendar()") Aktualisieren!
-    button(v-on:click="showPast ? showPast=false : showPast=true") Vergangene anzeigen
+    h1 Kurs INF16B
+    input(type='button' v-on:click="parseCalendar()" value="Aktualisieren")
+    input(type='button' v-on:click="showPast ? showPast=false : showPast=true" value="Vergangene anzeigen")
     p(v-if="timeNetwork" v-text="'timeNetwork: ' + timeNetwork + 'ms'")
     p(v-if="timeParse" v-text="'timeParse: ' + timeParse + 'ms'")
     p(v-if="timeGroup" v-text="'timeGroup: ' + timeGroup + 'ms'")
-
-    br
+    p(v-else)
 
     table
       tbody
@@ -23,8 +22,6 @@
                 span.timeleft(v-text="timeUntilEnd(getAttribute(event, 'dtstart'), getAttribute(event, 'dtend'))")
               td.dozent(v-text="getAttribute(event, 'description')")
               td.location(v-text="getAttribute(event, 'location')")
-
-              // 5 minuten bis Ende
 
 
 </template>
@@ -119,23 +116,59 @@
 
 <style scoped lang="stylus">
 
+  @import('../stylus/colors.styl')
+
+  .hello
+    width 900px
+    margin 0 auto
+    text-align left
+    h1
+      background-color: secondaryColor
+      color white
+      font-size 1.2rem
+      display inline-block
+      padding 8px 12px
+      margin-right 20px
+
+
   table
     text-align left
     width 900px
     margin 0 auto
+    border-spacing 0
+    box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.55);
 
-    td
-      padding-left 8px
+
+    tr td
+      padding: 10px 0
+
+    tr.event td:first-child
+      padding-left 16px
 
     p
       padding 0
       margin 0
 
   .day td
-    background-color: #D7DADC
+    background-color: tableDayBackgroundColor
     text-align center
+
 
   .timeleft
     color green
 
+  .hello
+    input[type=button]
+      margin 0 12px
+
+  input[type=button]
+    background-color: primaryColor
+    color: white
+    border 0
+    padding 8px 12px
+    border-radius 2px
+
+    &:hover
+      background-color: lighten(primaryColor, 3)
+      cursor: click
 </style>
