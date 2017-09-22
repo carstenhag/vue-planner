@@ -19,6 +19,12 @@ Vue.filter('formatDateToMonthDay', function (value) {
   if (value) return moment(String(value)).format('dd. DD.MM.YYYY')
 })
 
+// Adds a cachebuster to resources, so the ics files don't get cached
+Vue.http.interceptors.push((request, next) => {
+  request.url += (request.url.indexOf('?') > 0 ? '&' : '?') + `cb=${new Date().getTime()}`
+  next()
+})
+
 import {store} from './store'
 
 /* eslint-disable no-new */

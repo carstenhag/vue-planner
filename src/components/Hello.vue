@@ -2,6 +2,7 @@
   .hello
     h1 StuV Kalendar - INF16B
     button(v-on:click="parseCalendar()") Aktualisieren!
+    p(v-if="timeNetwork" v-text="'timeNetwork: ' + timeNetwork + 'ms'")
     p(v-if="timeParse" v-text="'timeParse: ' + timeParse + 'ms'")
     p(v-if="timeGroup" v-text="'timeGroup: ' + timeGroup + 'ms'")
 
@@ -36,6 +37,7 @@
     name: 'hello',
     data () {
       return {
+        timeNetwork: '',
         timeParse: '',
         timeGroup: ''
       }
@@ -70,12 +72,14 @@
       parseCalendar () {
         let t1 = performance.now()
         this.$http.get('https://static.chagemann.de/inf16b.ics').then(response => {
+          let t2 = performance.now()
+          this.timeNetwork = ('' + (t2 - t1)).substring(0, 5)
           this.icsData = response.body
 
           let parsedEvents = Ical.parse(this.icsData)[2].slice(1, -1) // not sure if also applies to other curses
           this.$store.commit('updateEvents', parsedEvents) // do we even need normal events persisted anymore?
-          let t2 = performance.now()
-          this.timeParse = ('' + (t2 - t1)).substring(0, 5)
+          let t3 = performance.now()
+          this.timeParse = ('' + (t3 - t2)).substring(0, 5)
           this.$store.commit('updateGroupedEvents', this.groupEventsByDate) // not sure if this should be here
         }, response => {
           console.log(response)
