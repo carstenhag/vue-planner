@@ -8,7 +8,8 @@ export const store = new Vuex.Store({
   plugins: [createPersistedState({key: 'vuex-stuv'})],
   state: {
     events: [],
-    groupedEvents: {} // without this it didn't get persisted after a refresh
+    groupedEvents: {}, // without this it didn't get persisted after a refresh
+    courseList: {}
   },
   mutations: {
     updateEvents (state, payload) {
@@ -16,6 +17,9 @@ export const store = new Vuex.Store({
     },
     updateGroupedEvents (state, payload) {
       state.groupedEvents = payload
+    },
+    updateCourseList (state, payload) {
+      state.courseList = payload
     }
   }
 })

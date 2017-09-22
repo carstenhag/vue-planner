@@ -1,9 +1,15 @@
 <template lang="pug">
   .hello
-    h1 Kurs INF16B
+    h1(v-text="'Kurs ' + selectedCourse")
+
+    select(v-model="selectedCourse")
+      template(v-for="(course, key) in getCourseList")
+        option(v-bind:value="key" v-bind:data-url="course") {{key}}
+
+
     input(type='button' v-on:click="parseCalendar()" value="Aktualisieren")
     input(type='button' v-on:click="showPast ? showPast=false : showPast=true" value="Vergangene anzeigen")
-    p(v-if="timeNetwork" v-text="'timeNetwork: ' + timeNetwork + 'ms'")
+    p(v-if="timeNetwork[0] && timeNetwork[1]" v-text="'timeNetwork: ' + timeNetwork.join('ms ') + 'ms'")
     p(v-if="timeParse" v-text="'timeParse: ' + timeParse + 'ms'")
     p(v-if="timeGroup" v-text="'timeGroup: ' + timeGroup + 'ms'")
     p(v-else)
@@ -35,11 +41,15 @@
     name: 'hello',
     data () {
       return {
-        timeNetwork: '',
+        timeNetwork: [],
         timeParse: '',
         timeGroup: '',
-        showPast: false
+        showPast: false,
+        selectedCourse: 'INF16B'
       }
+    },
+    mounted () {
+      this.parseCourseList()
     },
     computed: {
       getEvents () {
@@ -48,6 +58,9 @@
       // Creates a new object with events grouped by the same date, to make the display easier
       getEventsGroupedByDate () {
         return this.$store.state.groupedEvents
+      },
+      getCourseList () {
+        return this.$store.state.courseList
       },
       groupEventsByDate () {
         let t1 = performance.now()
@@ -72,14 +85,38 @@
         let t1 = performance.now()
         this.$http.get('https://static.chagemann.de/inf16b.ics').then(response => {
           let t2 = performance.now()
-          this.timeNetwork = ('' + (t2 - t1)).substring(0, 5)
-          this.icsData = response.body
+          this.timeNetwork[0] = ('' + (t2 - t1)).substring(0, 5)
+          let icsData = response.body
 
-          let parsedEvents = Ical.parse(this.icsData)[2].slice(1, -1) // not sure if also applies to other curses
+          let parsedEvents = Ical.parse(icsData)[2].slice(1, -1) // not sure if also applies to other curses
           this.$store.commit('updateEvents', parsedEvents) // do we even need normal events persisted anymore?
           let t3 = performance.now()
           this.timeParse = ('' + (t3 - t2)).substring(0, 5)
-          this.$store.commit('updateGroupedEvents', this.groupEventsByDate) // not sure if this should be here
+
+          // not sure if these should be here
+          this.$store.commit('updateGroupedEvents', this.groupEventsByDate)
+          this.parseCourseList()
+        }, response => {
+          console.log(response)
+        })
+      },
+      parseCourseList () {
+        let t1 = performance.now()
+        console.log(this.getCourseList[this.selectedCourse]) // for future use
+        this.$http.get('https://static.chagemann.de/calendars.list').then(response => {
+          let t2 = performance.now()
+          this.timeNetwork[1] = ('' + (t2 - t1)).substring(0, 5)
+          let data = response.body
+          let lines = data.split('\n')
+          let courseList = {}
+          for (let line of lines) {
+            let lineSplit = line.split(';')
+            if (lineSplit[0].length !== 0 && lineSplit !== 'CALENDARS') {
+              courseList[lineSplit[0]] = lineSplit[1]
+            }
+          }
+          courseList = this.sortJSONByKey(courseList)
+          this.$store.commit('updateCourseList', courseList)
         }, response => {
           console.log(response)
         })
@@ -109,6 +146,14 @@
       eventInThePast (endTime) {
         let m = moment(endTime)
         return moment().isSameOrBefore(m, 'day')
+      },
+      // https://stackoverflow.com/a/31102605/3991578
+      sortJSONByKey (unordered) {
+        let ordered = {}
+        Object.keys(unordered).sort().forEach(key => {
+          ordered[key] = unordered[key]
+        })
+        return ordered
       }
     }
   }
@@ -119,7 +164,7 @@
   @import('../stylus/colors.styl')
 
   .hello
-    width 900px
+    width 800px
     margin 0 auto
     text-align left
     h1
@@ -133,7 +178,7 @@
 
   table
     text-align left
-    width 900px
+    width 800px
     margin 0 auto
     border-spacing 0
     box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.55);
