@@ -9,7 +9,8 @@ export const store = new Vuex.Store({
   state: {
     events: [],
     groupedEvents: {}, // without this it didn't get persisted after a refresh
-    courseList: {}
+    courseList: {},
+    selectedCourse: ''
   },
   mutations: {
     updateEvents (state, payload) {
@@ -20,6 +21,9 @@ export const store = new Vuex.Store({
     },
     updateCourseList (state, payload) {
       state.courseList = payload
+    },
+    updateSelectedCourse (state, payload) {
+      state.selectedCourse = payload
     }
   }
 })

@@ -8,7 +8,7 @@
 
 
     input(type='button' v-on:click="parseCalendar()" value="Aktualisieren")
-    input(type='button' v-on:click="showPast ? showPast=false : showPast=true" value="Vergangene anzeigen")
+    input(type='button' v-on:click="showPast ? showPast=false : showPast=true" v-bind:value="showPast ? 'Vergangene ausblenden' : 'Vergangene anzeigen'")
     p(v-if="timeNetwork[0] && timeNetwork[1]" v-text="'timeNetwork: ' + timeNetwork.join('ms ') + 'ms'")
     p(v-if="timeParse" v-text="'timeParse: ' + timeParse + 'ms'")
     p(v-if="timeGroup" v-text="'timeGroup: ' + timeGroup + 'ms'")
@@ -29,6 +29,9 @@
               td.dozent(v-text="getAttribute(event, 'description')")
               td.location(v-text="getAttribute(event, 'location')")
 
+    br
+    input(type='button' v-on:click="parseCalendar()" value="Aktualisieren")
+    input(type='button' v-on:click="showPast ? showPast=false : showPast=true" v-bind:value="showPast ? 'Vergangene anzeigen' : 'Vergangene ausblenden'")
 
 </template>
 
@@ -44,14 +47,22 @@
         timeNetwork: [],
         timeParse: '',
         timeGroup: '',
-        showPast: false,
-        selectedCourse: 'INF16B'
+        showPast: false
       }
     },
     mounted () {
       this.parseCourseList()
     },
     computed: {
+      'selectedCourse': {
+        get () {
+          return this.$store.state.selectedCourse
+        },
+        set (value) {
+          this.$store.commit('updateSelectedCourse', value)
+          this.parseCalendar()
+        }
+      },
       getEvents () {
         return this.$store.state.events
       },
@@ -81,9 +92,15 @@
       }
     },
     methods: {
+      // should probably split into an update() method
       parseCalendar () {
         let t1 = performance.now()
-        this.$http.get('https://static.chagemann.de/inf16b.ics').then(response => {
+
+        let URL = this.getCourseList[this.selectedCourse]
+        URL = URL.replace('http://ics.mosbach.dhbw.de/', 'https://proxy.chagemann.de/')
+        console.log(URL)
+
+        this.$http.get(URL).then(response => {
           let t2 = performance.now()
           this.timeNetwork[0] = ('' + (t2 - t1)).substring(0, 5)
           let icsData = response.body
@@ -102,8 +119,8 @@
       },
       parseCourseList () {
         let t1 = performance.now()
-        console.log(this.getCourseList[this.selectedCourse]) // for future use
-        this.$http.get('https://static.chagemann.de/calendars.list').then(response => {
+
+        this.$http.get('https://proxy.chagemann.de/ics/calendars.list').then(response => {
           let t2 = performance.now()
           this.timeNetwork[1] = ('' + (t2 - t1)).substring(0, 5)
           let data = response.body
@@ -204,7 +221,7 @@
 
   .hello
     input[type=button]
-      margin 0 12px
+      margin 0 16px
 
   input[type=button]
     background-color: primaryColor
