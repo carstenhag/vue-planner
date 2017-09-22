@@ -16,12 +16,14 @@
 
           tr.event(v-for="event in eventsInOneDay" v-bind:class="{studyday: getAttribute(event, 'summary') === 'Studientag'}")
             td.time(v-text="formatDateHourMinutes(getAttribute(event, 'dtstart')) + ' - ' + formatDateHourMinutes(getAttribute(event, 'dtend'))")
-            td.summary(v-text="getAttribute(event, 'summary')")
+            td.summary
+              p(v-text="getAttribute(event, 'summary')")
+              span.timeleft(v-text="timeUntilEnd(getAttribute(event, 'dtstart'), getAttribute(event, 'dtend'))")
             td.dozent(v-text="getAttribute(event, 'description')")
             td.location(v-text="getAttribute(event, 'location')")
 
             // 5 minuten bis Ende
-            //td(v-text="timeUntilEnd(getAttribute('dtstart', event[3].originalIndex), getAttribute('dtend', event[3].originalIndex))")
+
 
 </template>
 
@@ -115,8 +117,15 @@
     td
       padding-left 8px
 
+    p
+      padding 0
+      margin 0
+
   .day td
     background-color: #D7DADC
     text-align center
+
+  .timeleft
+    color green
 
 </style>
