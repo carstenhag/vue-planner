@@ -2,6 +2,7 @@
   .hello
     h1 StuV Kalendar - INF16B
     button(v-on:click="parseCalendar()") Aktualisieren!
+    button(v-on:click="showPast ? showPast=false : showPast=true") Vergangene anzeigen
     p(v-if="timeNetwork" v-text="'timeNetwork: ' + timeNetwork + 'ms'")
     p(v-if="timeParse" v-text="'timeParse: ' + timeParse + 'ms'")
     p(v-if="timeGroup" v-text="'timeGroup: ' + timeGroup + 'ms'")
@@ -10,20 +11,20 @@
 
     table
       tbody
-        //p(v-text="printElement(getEventsGroupedByDate)")
         template(v-for="eventsInOneDay in getEventsGroupedByDate")
-          tr.day
-            td(v-text="formatDateLong(getAttribute(eventsInOneDay[0], 'dtstart'))" colspan='4')
+          template(v-if="showPast || eventInThePast(getAttribute(eventsInOneDay[0], 'dtend'))")
+            tr.day
+              td(v-text="formatDateLong(getAttribute(eventsInOneDay[0], 'dtstart'))" colspan='4')
 
-          tr.event(v-for="event in eventsInOneDay" v-bind:class="{studyday: getAttribute(event, 'summary') === 'Studientag'}")
-            td.time(v-text="formatDateHourMinutes(getAttribute(event, 'dtstart')) + ' - ' + formatDateHourMinutes(getAttribute(event, 'dtend'))")
-            td.summary
-              p(v-text="getAttribute(event, 'summary')")
-              span.timeleft(v-text="timeUntilEnd(getAttribute(event, 'dtstart'), getAttribute(event, 'dtend'))")
-            td.dozent(v-text="getAttribute(event, 'description')")
-            td.location(v-text="getAttribute(event, 'location')")
+            tr.event(v-for="event in eventsInOneDay" v-bind:class="{studyday: getAttribute(event, 'summary') === 'Studientag'}")
+              td.time(v-text="formatDateHourMinutes(getAttribute(event, 'dtstart')) + ' - ' + formatDateHourMinutes(getAttribute(event, 'dtend'))")
+              td.summary
+                p(v-text="getAttribute(event, 'summary')")
+                span.timeleft(v-text="timeUntilEnd(getAttribute(event, 'dtstart'), getAttribute(event, 'dtend'))")
+              td.dozent(v-text="getAttribute(event, 'description')")
+              td.location(v-text="getAttribute(event, 'location')")
 
-            // 5 minuten bis Ende
+              // 5 minuten bis Ende
 
 
 </template>
@@ -39,7 +40,8 @@
       return {
         timeNetwork: '',
         timeParse: '',
-        timeGroup: ''
+        timeGroup: '',
+        showPast: false
       }
     },
     computed: {
@@ -106,6 +108,10 @@
         if (moment().isBetween(moment(startTime), moment(endTime))) {
           return 'Vorlesung zuende ' + moment().to(endTime)
         }
+      },
+      eventInThePast (endTime) {
+        let m = moment(endTime)
+        return moment().isSameOrBefore(m, 'day')
       }
     }
   }
