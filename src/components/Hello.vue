@@ -2,9 +2,10 @@
   .hello
     h1(v-text="'Kurs ' + selectedCourse")
 
-    select(v-model="selectedCourse")
+    select(v-model="selectedCourse" v-bind:disabled="!isCourseListLoaded")
+      option(value="" hidden disabled selected) Kurs auswählen
       template(v-for="(course, key) in getCourseList")
-        option(v-bind:value="key" v-bind:data-url="course") {{key}}
+        option(v-bind:value="key") {{key}}
 
 
     input(type='button' v-on:click="parseCalendar()" value="Aktualisieren")
@@ -13,6 +14,8 @@
     p(v-if="timeParse" v-text="'timeParse: ' + timeParse + 'ms'")
     p(v-if="timeGroup" v-text="'timeGroup: ' + timeGroup + 'ms'")
     p(v-else)
+
+    p(v-if="selectedCourse === ''") Bitte wähle einen Kurs aus der Liste aus.
 
     table
       tbody
@@ -30,9 +33,6 @@
               td.location(v-text="getAttribute(event, 'location')")
 
     br
-    input(type='button' v-on:click="parseCalendar()" value="Aktualisieren")
-    input(type='button' v-on:click="showPast ? showPast=false : showPast=true" v-bind:value="showPast ? 'Vergangene anzeigen' : 'Vergangene ausblenden'")
-
 </template>
 
 <script>
@@ -47,7 +47,8 @@
         timeNetwork: [],
         timeParse: '',
         timeGroup: '',
-        showPast: false
+        showPast: false,
+        isCourseListLoaded: false
       }
     },
     mounted () {
@@ -134,6 +135,7 @@
           }
           courseList = this.sortJSONByKey(courseList)
           this.$store.commit('updateCourseList', courseList)
+          this.isCourseListLoaded = true
         }, response => {
           console.log(response)
         })
