@@ -231,6 +231,7 @@
     border 0
     padding 8px 12px
     border-radius 2px
+    -webkit-appearance: none // WHY APPLE
 
     &:hover
       background-color: lighten(primaryColor, 3)
