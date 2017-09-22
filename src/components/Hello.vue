@@ -47,8 +47,18 @@
         timeNetwork: [],
         timeParse: '',
         timeGroup: '',
+        //title: 'Home',
         showPast: false,
         isCourseListLoaded: false
+      }
+    },
+    metaInfo () {
+      return {
+        title: 'Vorlesungen ' + this.selectedCourse,
+        meta: [
+          { charset: 'utf-8' },
+          { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+        ]
       }
     },
     mounted () {
