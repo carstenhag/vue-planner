@@ -2,21 +2,25 @@
   .hello
     h1 StuV Kalendar - INF16B
     button(v-on:click="parseCalendar()") Aktualisieren!
+    p(v-if="timeParse" v-text="'timeParse: ' + timeParse + 'ms'")
+    p(v-if="timeGroup" v-text="'timeGroup: ' + timeGroup + 'ms'")
 
     br
 
     table
       tbody
-        template(v-for="(eventsInOneDay, i) in getEventsGroupedByDate")
+        //p(v-text="printElement(getEventsGroupedByDate)")
+        template(v-for="eventsInOneDay in getEventsGroupedByDate")
           tr.day
-            td(v-text="formatDateLong(getAttribute('dtstart', eventsInOneDay[0][3].originalIndex))" colspan='4')
+            td(v-text="formatDateLong(getAttribute(eventsInOneDay[0], 'dtstart'))" colspan='4')
 
-          tr.event(v-for="(event, j) in eventsInOneDay" v-bind:class="{studyday: getAttribute('summary', event[3].originalIndex) === 'Studientag'}")
-            td(v-text="formatDateHourMinutes(getAttribute('dtstart', event[3].originalIndex)) + ' - ' + formatDateHourMinutes(getAttribute('dtend', event[3].originalIndex))")
-            td.summary(v-text="getAttribute('summary', event[3].originalIndex)")
-            td.dozent(v-text="getAttribute('description', event[3].originalIndex)")
-            td.location(v-text="getAttribute('location', event[3].originalIndex)")
+          tr.event(v-for="event in eventsInOneDay" v-bind:class="{studyday: getAttribute(event, 'summary') === 'Studientag'}")
+            td.time(v-text="formatDateHourMinutes(getAttribute(event, 'dtstart')) + ' - ' + formatDateHourMinutes(getAttribute(event, 'dtend'))")
+            td.summary(v-text="getAttribute(event, 'summary')")
+            td.dozent(v-text="getAttribute(event, 'description')")
+            td.location(v-text="getAttribute(event, 'location')")
 
+            // 5 minuten bis Ende
             //td(v-text="timeUntilEnd(getAttribute('dtstart', event[3].originalIndex), getAttribute('dtend', event[3].originalIndex))")
 
 </template>
@@ -30,6 +34,8 @@
     name: 'hello',
     data () {
       return {
+        timeParse: '',
+        timeGroup: ''
       }
     },
     computed: {
@@ -41,50 +47,46 @@
         return this.$store.state.groupedEvents
       },
       groupEventsByDate () {
-        console.time('groupEventsByDate')
+        let t1 = performance.now()
         let groupedEvents = {}
         for (let i = 0; i < this.$store.state.events.length; i++) {
           let modifiedEvent = this.getEvents[i]
 
           // As we are grouping things together, the old indexes are no longer valid, but we need them to get attributes.
-          if (!modifiedEvent.hasOwnProperty('originalindex')) {
-            modifiedEvent.push({'originalIndex': i})
-          }
+          //
+          // takes about 1 sec to push everything, need to remove this
+          //if (!modifiedEvent.hasOwnProperty('originalindex')) {
+          //  modifiedEvent.push({'originalIndex': i})
+          //}
 
-          // not sure why i + 1 < length specifically, but we have to make sure not to check length+1 for obvious reasons
-          if (i + 1 < this.getEvents.length) {
-            let currentFormattedDate = this.formatDateLong(this.getAttribute('dtstart', i))
-            if (currentFormattedDate === this.formatDateLong(this.getAttribute('dtstart', i + 1))) {
-              if (groupedEvents[currentFormattedDate] === undefined) {
-                groupedEvents[currentFormattedDate] = []
-              }
-              groupedEvents[currentFormattedDate].push(modifiedEvent)
-            }
+          let currentFormattedDate = this.formatDateLong(this.getAttribute(modifiedEvent, 'dtstart'))
+          if (groupedEvents[currentFormattedDate] === undefined) {
+            groupedEvents[currentFormattedDate] = []
           }
+          groupedEvents[currentFormattedDate].push(modifiedEvent)
         }
-        console.timeEnd('groupEventsByDate')
+        let t2 = performance.now()
+        this.timeGroup = ('' + (t2 - t1)).substring(0, 5)
         return groupedEvents
       }
     },
     methods: {
       parseCalendar () {
-        console.time('parseCalendar')
+        let t1 = performance.now()
         this.$http.get('https://static.chagemann.de/inf16b.ics').then(response => {
           this.icsData = response.body
 
           let parsedEvents = Ical.parse(this.icsData)[2].slice(1, -1) // not sure if also applies to other curses
           this.$store.commit('updateEvents', parsedEvents) // do we even need normal events persisted anymore?
-          console.timeEnd('parseCalendar')
+          let t2 = performance.now()
+          this.timeParse = ('' + (t2 - t1)).substring(0, 5)
           this.$store.commit('updateGroupedEvents', this.groupEventsByDate) // not sure if this should be here
         }, response => {
           console.log(response)
         })
       },
-      getAttribute (attribute, index) {
-        // 0.2 - 0.4 ms on mac
-        let events = this.getEvents[index][1]
-
-        for (let item of events) {
+      getAttribute (event, attribute) {
+        for (let item of event[1]) {
           if (item[0] === attribute) {
             return item[3]
           }
