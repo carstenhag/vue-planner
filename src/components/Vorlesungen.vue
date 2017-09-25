@@ -19,18 +19,18 @@
 
     table
       tbody
-        template(v-for="eventsInOneDay in getEventsGroupedByDate")
-          template(v-if="showPast || eventInThePast(getAttribute(eventsInOneDay[0], 'dtend'))")
+        template(v-for="lecturesInOneDay in getLecturesGroupedByDate")
+          template(v-if="showPast || lectureInThePast(getAttribute(lecturesInOneDay[0], 'dtend'))")
             tr.day
-              td(v-text="formatDateLong(getAttribute(eventsInOneDay[0], 'dtstart'))" colspan='4')
+              td(v-text="formatDateLong(getAttribute(lecturesInOneDay[0], 'dtstart'))" colspan='4')
 
-            tr.event(v-for="event in eventsInOneDay" v-bind:class="{studyday: getAttribute(event, 'summary') === 'Studientag'}")
-              td.time(v-text="formatDateHourMinutes(getAttribute(event, 'dtstart')) + ' - ' + formatDateHourMinutes(getAttribute(event, 'dtend'))")
+            tr.lecture(v-for="lecture in lecturesInOneDay" v-bind:class="{studyday: getAttribute(lecture, 'summary') === 'Studientag'}")
+              td.time(v-text="formatDateHourMinutes(getAttribute(lecture, 'dtstart')) + ' - ' + formatDateHourMinutes(getAttribute(lecture, 'dtend'))")
               td.summary
-                p(v-text="getAttribute(event, 'summary')")
-                span.timeleft(v-text="timeUntilEnd(getAttribute(event, 'dtstart'), getAttribute(event, 'dtend'))")
-              td.dozent(v-text="getAttribute(event, 'description')")
-              td.location(v-text="getAttribute(event, 'location')")
+                p(v-text="getAttribute(lecture, 'summary')")
+                span.timeleft(v-text="timeUntilEnd(getAttribute(lecture, 'dtstart'), getAttribute(lecture, 'dtend'))")
+              td.dozent(v-text="getAttribute(lecture, 'description')")
+              td.location(v-text="getAttribute(lecture, 'location')")
 
     br
 </template>
@@ -70,32 +70,32 @@
           this.parseCalendar()
         }
       },
-      getEvents () {
-        return this.$store.state.events
+      getLectures () {
+        return this.$store.state.lectures
       },
-      // Creates a new object with events grouped by the same date, to make the display easier
-      getEventsGroupedByDate () {
-        return this.$store.state.groupedEvents
+      // Creates a new object with lectures grouped by the same date, to make the display easier
+      getLecturesGroupedByDate () {
+        return this.$store.state.groupedLectures
       },
       getCourseList () {
         return this.$store.state.courseList
       },
-      groupEventsByDate () {
+      groupLecturesByDate () {
         const t1 = performance.now()
 
-        let groupedEvents = {}
+        let groupedLectures = {}
 
-        for (let event of this.getEvents) {
-          let currentFormattedDate = this.formatDateLong(this.getAttribute(event, 'dtstart'))
-          if (groupedEvents[currentFormattedDate] === undefined) {
-            groupedEvents[currentFormattedDate] = []
+        for (let lecture of this.getLectures) {
+          let currentFormattedDate = this.formatDateLong(this.getAttribute(lecture, 'dtstart'))
+          if (groupedLectures[currentFormattedDate] === undefined) {
+            groupedLectures[currentFormattedDate] = []
           }
-          groupedEvents[currentFormattedDate].push(event)
+          groupedLectures[currentFormattedDate].push(lecture)
         }
 
         const t2 = performance.now()
         this.timeGroup = ('' + (t2 - t1)).substring(0, 5)
-        return groupedEvents
+        return groupedLectures
       }
     },
     methods: {
@@ -111,13 +111,13 @@
           this.timeNetwork[0] = ('' + (t2 - t1)).substring(0, 5)
           const icsData = response.body
 
-          const parsedEvents = Ical.parse(icsData)[2].slice(1, -1) // not sure if also applies to other curses
-          this.$store.commit('updateEvents', parsedEvents) // do we even need normal events persisted anymore?
+          const parsedLectures = Ical.parse(icsData)[2].slice(1, -1) // not sure if also applies to other curses
+          this.$store.commit('updateLectures', parsedLectures) // do we even need normal lectures persisted anymore?
           const t3 = performance.now()
           this.timeParse = ('' + (t3 - t2)).substring(0, 5)
 
           // not sure if these should be here
-          this.$store.commit('updateGroupedEvents', this.groupEventsByDate)
+          this.$store.commit('updateGroupedLectures', this.groupLecturesByDate)
           this.parseCourseList()
         }, response => {
           console.log(response)
@@ -145,8 +145,8 @@
           console.log(response)
         })
       },
-      getAttribute (event, attribute) {
-        for (let item of event[1]) {
+      getAttribute (lecture, attribute) {
+        for (let item of lecture[1]) {
           if (item[0] === attribute) {
             return item[3]
           }
@@ -167,7 +167,7 @@
           return 'Vorlesung zuende ' + moment().to(endTime)
         }
       },
-      eventInThePast (endTime) {
+      lectureInThePast (endTime) {
         return moment().isSameOrBefore(moment(endTime), 'day')
       },
       // https://stackoverflow.com/a/31102605/3991578
@@ -210,7 +210,7 @@
     tr td
       padding: 10px 0
 
-    tr.event td:first-child
+    tr.lecture td:first-child
       padding-left 16px
 
     p
