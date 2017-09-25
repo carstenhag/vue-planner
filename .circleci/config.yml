@@ -6,6 +6,8 @@ jobs:
 
     working_directory: ~/repo
 
+    resource_class: small # probably don't need medium for this
+
     steps:
       - checkout
 
