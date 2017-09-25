@@ -1,4 +1,4 @@
-<template lang="pug">
+
   .home
     br
     br
