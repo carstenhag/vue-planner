@@ -6,16 +6,19 @@ import Vorlesungen from '@/components/Vorlesungen'
 import Veranstaltungen from '@/components/Veranstaltungen'
 import News from '@/components/News'
 import Studierendenwerk from '@/components/Studierendenwerk'
+import NotFound from '@/components/NotFound'
 import Meta from 'vue-meta'
 
 Vue.use(Router)
 Vue.use(Meta)
 
 export default new Router({
+  // https://router.vuejs.org/en/essentials/history-mode.html Enable history mode so the ugly # dissapears from the URL
+  mode: 'history',
   routes: [
     {
       path: '*',
-      redirect: '/'
+      component: NotFound
     },
     {
       path: '/',
