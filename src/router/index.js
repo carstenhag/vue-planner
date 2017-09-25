@@ -33,6 +33,11 @@ export default new Router({
       component: Vorlesungen
     },
     {
+      path: '/vorlesungen/:course',
+      name: 'Vorlesungen with course',
+      component: Vorlesungen
+    },
+    {
       path: '/veranstaltungen',
       name: 'Veranstaltungen',
       component: Veranstaltungen

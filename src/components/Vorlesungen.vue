@@ -10,6 +10,7 @@
 
     input(type='button' v-on:click="parseCalendar()" value="Aktualisieren")
     input(type='button' v-on:click="showPast ? showPast=false : showPast=true" v-bind:value="showPast ? 'Vergangene ausblenden' : 'Vergangene anzeigen'")
+    input(type='button' v-on:click="clearLocalStorage()" value="LocalStorage löschen")
     p(v-if="timeNetwork[0] && timeNetwork[1]" v-text="'timeNetwork: ' + timeNetwork.join('ms ') + 'ms'")
     p(v-if="timeParse" v-text="'timeParse: ' + timeParse + 'ms'")
     p(v-if="timeGroup" v-text="'timeGroup: ' + timeGroup + 'ms'")
@@ -58,7 +59,14 @@
       }
     },
     mounted () {
-      this.parseCourseList()
+      let handleRoute = function () {
+        let parameterCourse = this.$route.params.course
+        if (parameterCourse !== undefined && this.getCourseList.hasOwnProperty(parameterCourse.toUpperCase())) {
+          this.selectedCourse = parameterCourse.toUpperCase()
+        }
+      }
+
+      this.parseCourseList(handleRoute.apply(this))
     },
     computed: {
       'selectedCourse': {
@@ -118,7 +126,7 @@
 
           // not sure if these should be here
           this.$store.commit('updateGroupedLectures', this.groupLecturesByDate)
-          this.parseCourseList()
+          this.parseCourseList() // FIX: Update this only if URL is undefined
         }, response => {
           console.log(response)
         })
@@ -177,6 +185,9 @@
           ordered[key] = unordered[key]
         })
         return ordered
+      },
+      clearLocalStorage () {
+        localStorage.clear()
       }
     }
   }
