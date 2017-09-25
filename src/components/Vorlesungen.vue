@@ -63,10 +63,13 @@
         let parameterCourse = this.$route.params.course
         if (parameterCourse !== undefined && this.getCourseList.hasOwnProperty(parameterCourse.toUpperCase())) {
           this.selectedCourse = parameterCourse.toUpperCase()
+        } else {
+          console.log(this.getCourseList)
+          console.log(parameterCourse + ' not in list')
         }
       }
 
-      this.parseCourseList(handleRoute.apply(this))
+      this.parseCourseList(handleRoute)
     },
     computed: {
       'selectedCourse': {
@@ -74,6 +77,7 @@
           return this.$store.state.selectedCourse
         },
         set (value) {
+          this.$router.push('/vorlesungen/' + value)
           this.$store.commit('updateSelectedCourse', value)
           this.parseCalendar()
         }
@@ -131,7 +135,7 @@
           console.log(response)
         })
       },
-      parseCourseList () {
+      parseCourseList (callback) {
         const t1 = performance.now()
 
         this.$http.get('https://proxy.chagemann.de/ics/calendars.list').then(response => {
@@ -149,6 +153,10 @@
           courseList = this.sortJSONByKey(courseList)
           this.$store.commit('updateCourseList', courseList)
           this.isCourseListLoaded = true
+
+          if (callback !== undefined) {
+            callback.apply(this)
+          }
         }, response => {
           console.log(response)
         })

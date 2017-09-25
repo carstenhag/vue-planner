@@ -17,7 +17,7 @@
     router-view
     br
     a#github(href="https://github.com/carstenhag/vue-stuv")
-      p Das Projekt auf Github
+      span Das Projekt auf Github
 </template>
 
 <script>
