@@ -8,8 +8,10 @@
     name: 'empty',
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App'
       }
+    },
+    metaInfo: {
+      title: 'Empty'
     }
   }
 </script>

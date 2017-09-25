@@ -25,7 +25,11 @@ export default {
   name: 'app',
   metaInfo: {
     title: 'Home',
-    titleTemplate: '%s | StuV Survival'
+    titleTemplate: '%s | StuV Survival',
+    meta: [
+      { charset: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+    ]
   }
 }
 </script>

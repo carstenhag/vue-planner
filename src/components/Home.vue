@@ -16,6 +16,9 @@
     data () {
       return {
       }
+    },
+    metaInfo: {
+      title: 'Home'
     }
   }
 </script>

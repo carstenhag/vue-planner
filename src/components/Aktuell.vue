@@ -9,6 +9,9 @@
     data () {
       return {
       }
+    },
+    metaInfo: {
+      title: 'Aktuell'
     }
   }
 </script>
