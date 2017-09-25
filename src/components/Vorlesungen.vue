@@ -36,12 +36,12 @@
 </template>
 
 <script>
-  var Ical = require('ical.js')
+  const Ical = require('ical.js')
 
   import moment from 'moment'
 
   export default {
-    name: 'hello',
+    name: 'Vorlesungen',
     data () {
       return {
         timeNetwork: [],
@@ -85,7 +85,7 @@
         return this.$store.state.courseList
       },
       groupEventsByDate () {
-        let t1 = performance.now()
+        const t1 = performance.now()
 
         let groupedEvents = {}
 
@@ -97,7 +97,7 @@
           groupedEvents[currentFormattedDate].push(event)
         }
 
-        let t2 = performance.now()
+        const t2 = performance.now()
         this.timeGroup = ('' + (t2 - t1)).substring(0, 5)
         return groupedEvents
       }
@@ -105,20 +105,19 @@
     methods: {
       // should probably split into an update() method
       parseCalendar () {
-        let t1 = performance.now()
+        const t1 = performance.now()
 
         let URL = this.getCourseList[this.selectedCourse]
         URL = URL.replace('http://ics.mosbach.dhbw.de/', 'https://proxy.chagemann.de/')
-        console.log(URL)
 
         this.$http.get(URL).then(response => {
-          let t2 = performance.now()
+          const t2 = performance.now()
           this.timeNetwork[0] = ('' + (t2 - t1)).substring(0, 5)
-          let icsData = response.body
+          const icsData = response.body
 
-          let parsedEvents = Ical.parse(icsData)[2].slice(1, -1) // not sure if also applies to other curses
+          const parsedEvents = Ical.parse(icsData)[2].slice(1, -1) // not sure if also applies to other curses
           this.$store.commit('updateEvents', parsedEvents) // do we even need normal events persisted anymore?
-          let t3 = performance.now()
+          const t3 = performance.now()
           this.timeParse = ('' + (t3 - t2)).substring(0, 5)
 
           // not sure if these should be here
@@ -129,13 +128,13 @@
         })
       },
       parseCourseList () {
-        let t1 = performance.now()
+        const t1 = performance.now()
 
         this.$http.get('https://proxy.chagemann.de/ics/calendars.list').then(response => {
-          let t2 = performance.now()
+          const t2 = performance.now()
           this.timeNetwork[1] = ('' + (t2 - t1)).substring(0, 5)
-          let data = response.body
-          let lines = data.split('\n')
+          const data = response.body
+          const lines = data.split('\n')
           let courseList = {}
           for (let line of lines) {
             let lineSplit = line.split(';')
@@ -173,8 +172,7 @@
         }
       },
       eventInThePast (endTime) {
-        let m = moment(endTime)
-        return moment().isSameOrBefore(m, 'day')
+        return moment().isSameOrBefore(moment(endTime), 'day')
       },
       // https://stackoverflow.com/a/31102605/3991578
       sortJSONByKey (unordered) {
