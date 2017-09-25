@@ -1,6 +1,23 @@
 <template lang="pug">
   #app
+    nav
+      ul
+        li
+          router-link(to="/") Home
+        li
+          router-link(to="/aktuell") Aktuell
+        li
+          router-link(to="/vorlesungen") Vorlesungen
+        li
+          router-link(to="/veranstaltungen") Veranstaltungen
+        li
+          router-link(to="/news") News
+        li
+          router-link(to="/studierendenwerk") Studierendenwerk
     router-view
+    br
+    a#github(href="https://github.com/carstenhag/vue-stuv")
+      p Das Projekt auf Github
 </template>
 
 <script>
