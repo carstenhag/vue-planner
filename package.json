@@ -1,6 +1,6 @@
 {
   "name": "vue-stuv",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "StuV Web-App",
   "author": "Carsten Hagemann <carsten@chagemann.de>",
   "private": true,
@@ -11,6 +11,7 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
+    "feedme": "^1.0.1",
     "ical.js": "^1.2.2",
     "moment": "^2.18.1",
     "vue": "^2.4.2",
