@@ -180,7 +180,7 @@
       },
       timeUntilEnd (startTime, endTime) {
         if (moment().isBetween(moment(startTime), moment(endTime))) {
-          return 'Vorlesung zuende ' + moment().to(endTime)
+          return 'Vorlesung zu Ende ' + moment().to(endTime)
         }
       },
       lectureInThePast (endTime) {
