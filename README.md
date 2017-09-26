@@ -19,11 +19,11 @@ So far I'm aiming to get close to a feature parity with the Android app.
 
 The following is a list of functional requirements:
 
-- [x] Display the courses (Vorlesungen) of a module
-- [ ] Tab with current events organized by the StuV (iCal Calendar), possibly other events that may be interesting for students
-- [ ] Tab with current news from the StuV (RSS Feed)
+- [x] Display the courses (From the DHBW, `.ics` files) of a module
+- [x] Tab with current events organized by the StuV (Google Calendar, JSON API), possibly other events that may be interesting for students
+- [x] Tab with current news from the StuV (RSS/JSON Feed on a WordPress instance)
+- [x] Display links to the Studierendenwerk for general information stuff
 - [ ] Display courses and events of the next two days in an "Aktuell" tab
-- [ ] Display links to the Studierendenwerk for general information stuff
 - [ ] At lunch times, show a button to open the Mensaplan
 
  
