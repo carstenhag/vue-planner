@@ -2,6 +2,7 @@
   .news
     ul.posts
       li(v-for="post in getPosts")
+        p.right(v-text="formatDateLong(post.date)")
         p(v-html="post.content.rendered")
 </template>
 
@@ -37,17 +38,36 @@
         })
       },
       modifyPosts (posts) {
+        // Deep copy the array
         let modifiedPosts = JSON.parse(JSON.stringify(posts))
         for (let i in posts) {
-          if (posts[i].content.rendered.substring(0, 7) === '<p><img') {
-            let newContent = posts[i].content.rendered.substring(3)
-            let indexImgClose = newContent.indexOf('/>')
+          if (posts[i].content.rendered.indexOf('<p><img') !== -1) {
+            // `<div class="useless content"><p><img     .../>some text relevant to the image</p>`
+            //  ^firstPart                      ^secondPart   ^thirdPart (<p> gets moved there)
+            // First occurance of the tag
+            let index = posts[i].content.rendered.indexOf('<p><img')
 
-            newContent = newContent.substring(0, indexImgClose + 2) + '<p>' + newContent.substring(indexImgClose + 2)
+            // First Part will usually be empty, if not for some element even before the <p><img> tags
+            let firstPart = posts[i].content.rendered.substring(0, index)
+
+            // Second Part starts at the img tag, removing the p tag from `<p><img...`
+            let secondPartUnmodified = posts[i].content.rendered.substring(index + 3)
+
+            // Look up at what index the closing bracket for the img tag is at
+            let indexImgClose = secondPartUnmodified.indexOf('>')
+
+            // Divide the second part into two pieces and add the p tag inbetween
+            let secondPart = secondPartUnmodified.substring(0, indexImgClose + 1)
+            let thirdPart = '<p>' + secondPartUnmodified.substring(indexImgClose + 1)
+
+            let newContent = firstPart + secondPart + thirdPart
             modifiedPosts[i].content.rendered = newContent
           }
         }
         return modifiedPosts
+      },
+      formatDateLong (time) {
+        return this.$options.filters.formatDateToMonthDay(time)
       }
     }
   }
@@ -70,10 +90,16 @@
       padding 10px 10px
       border-radius 2px
       box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.25);
+
+  .right
+    text-align right
+    padding-right 20px
+    padding-bottom -20px
+    margin 8px 0 -8px
 </style>
 
 <<style lang="stylus">
   img
-    max-width: 300px
+    max-width: 90%
     height: auto
 </style>
