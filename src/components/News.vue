@@ -1,6 +1,5 @@
 <template lang="pug">
   .news
-    p Noch nicht implementiert.
     ul.posts
       li(v-for="post in getPosts")
         p(v-html="post.content.rendered")
