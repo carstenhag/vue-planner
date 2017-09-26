@@ -7,14 +7,15 @@
       template(v-for="(course, key) in getCourseList")
         option(v-bind:value="key") {{key}}
 
-
+    br
     input(type='button' v-on:click="parseCalendar()" value="Aktualisieren")
     input(type='button' v-on:click="showPast ? showPast=false : showPast=true" v-bind:value="showPast ? 'Vergangene ausblenden' : 'Vergangene anzeigen'")
     input(type='button' v-on:click="clearLocalStorage()" value="LocalStorage löschen")
-    p(v-if="timeNetwork[0] && timeNetwork[1]" v-text="'timeNetwork: ' + timeNetwork.join('ms ') + 'ms'")
-    p(v-if="timeParse" v-text="'timeParse: ' + timeParse + 'ms'")
-    p(v-if="timeGroup" v-text="'timeGroup: ' + timeGroup + 'ms'")
-    p(v-else)
+    .timers(v-if="timeNetwork[0] && timeNetwork[1]")
+      p(v-if="timeNetwork[0] && timeNetwork[1]" v-text="'timeNetwork: ' + timeNetwork.join('ms ') + 'ms'")
+      p(v-if="timeParse" v-text="'timeParse: ' + timeParse + 'ms'")
+      p(v-if="timeGroup" v-text="'timeGroup: ' + timeGroup + 'ms'")
+      p(v-else)
 
     p(v-if="selectedCourse === ''") Bitte wähle einen Kurs aus der Liste aus.
 
@@ -201,14 +202,16 @@
   }
 </script>
 
-<style scoped lang="stylus">
+<style type="text/stylus" scoped lang="stylus">
 
   @import('../stylus/colors.styl')
 
   .hello
-    width 800px
+    max-width 800px
     margin 0 auto
     text-align left
+    //@media screen and (max-width: 800px)
+      //width initial
     h1
       background-color: secondaryColor
       color white
@@ -220,17 +223,36 @@
 
   table
     text-align left
-    width 800px
+    //min-width 100%
+    width: 100%
+    max-width 800px
     margin 0 auto
     border-spacing 0
     box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.55);
 
+    @media screen and (max-width: 800px)
+      //width: initial
+      box-shadow none
+
+    tbody
+      @media screen and (max-width: 800px)
+        font-size 0.9rem
+
 
     tr td
       padding: 10px 0
+      @media screen and (max-width: 800px)
+        padding 8px 0
 
     tr.lecture td:first-child
       padding-left 16px
+
+      @media screen and (max-width: 800px)
+        padding-left 8px
+
+    tr.lecture td:last-child
+      @media screen and (max-width: 800px)
+        padding-right 8px
 
     p
       padding 0
@@ -240,13 +262,19 @@
     background-color: tableDayBackgroundColor
     text-align center
 
+    @media screen and (max-width: 800px)
+      font-size 1rem
+
 
   .timeleft
     color green
 
   .hello
     input[type=button]
-      margin 0 16px
+      margin 0 16px 16px
+
+      @media screen and (max-width: 800px)
+        margin-bottom 8px
 
   input[type=button]
     background-color: primaryColor
@@ -255,8 +283,12 @@
     padding 8px 12px
     border-radius 2px
     -webkit-appearance: none // WHY APPLE
+    font-size 0.8rem
 
     &:hover
       background-color: lighten(primaryColor, 3)
       cursor: click
+
+  .timers p
+    padding-left 8px
 </style>
