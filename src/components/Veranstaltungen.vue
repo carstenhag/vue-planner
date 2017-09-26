@@ -36,8 +36,6 @@
           let events = data.items
 
           events = this.filterOldEvents(events)
-          console.log(events)
-
           this.$store.commit('updateEvents', events)
         }, response => {
           console.log(response)
