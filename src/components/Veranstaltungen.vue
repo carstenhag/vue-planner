@@ -72,7 +72,7 @@
 <style scoped lang="stylus">
   @import '../stylus/colors.styl'
 
-  .events
+  .events,
     text-align center
     max-width: 600px
     margin: 0 auto
@@ -83,6 +83,9 @@
       color white
       width: 90%
       margin 10px auto
+      border-radius 2px
+      box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.25);
+
 
       p.title
         margin 0
@@ -90,8 +93,8 @@
 
       p.description
         padding 0 0.4rem 1rem
-        // Preserve newlines from the calendar https://stackoverflow.com/a/36729761/3991578
-        white-space: pre-wrap; 
+        //Preserve newlines from the calendar https://stackoverflow.com/a/36729761/3991578
+        white-space: pre-wrap;
         word-wrap: break-word;
         font-family: inherit;
 

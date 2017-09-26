@@ -236,7 +236,7 @@
     max-width 800px
     margin 0 auto
     border-spacing 0
-    box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.55);
+    box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.35);
 
     @media screen and (max-width: 800px)
       //width: initial
