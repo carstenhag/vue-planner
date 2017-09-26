@@ -56,7 +56,7 @@ export default {
     list-style-type: none
     padding: 0
 
-  li
+  nav li
     display: inline-block
     margin: 0 10px
 

@@ -5,10 +5,11 @@ import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
-  plugins: [createPersistedState({key: 'vuex-stuv-0.1.0'})],
+  plugins: [createPersistedState({key: 'vuex-stuv-0.2.0'})],
   state: {
     lectures: [],
     groupedLectures: {}, // without this it didn't get persisted after a refresh
+    events: [],
     courseList: {},
     selectedCourse: ''
   },
@@ -24,6 +25,9 @@ export const store = new Vuex.Store({
     },
     updateSelectedCourse (state, payload) {
       state.selectedCourse = payload
+    },
+    updateEvents (state, payload) {
+      state.events = payload
     }
   }
 })
