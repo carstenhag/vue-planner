@@ -2,16 +2,21 @@
   .hello
     h1(v-text="'Kurs ' + selectedCourse")
 
+    // Populate the select-box with option fields
     select(v-model="selectedCourse" v-bind:disabled="!isCourseListLoaded")
+      // Default option to show placeholder
       option(value="" hidden disabled selected) Kurs auswählen
+      // Template element to be able to iterate
       template(v-for="(course, key) in getCourseList")
         option(v-bind:value="key") {{key}}
 
     br
+
     input(type='button' v-on:click="parseCalendar()" value="Aktualisieren")
     input(type='button' v-on:click="showPast ? showPast=false : showPast=true" v-bind:value="showPast ? 'Vergangene ausblenden' : 'Vergangene anzeigen'")
     input(type='button' v-on:click="clearLocalStorage()" value="LocalStorage löschen")
-    .timers(v-if="timeNetwork[0] && timeNetwork[1]")
+    // Various performance timers to check performance on different devices
+    //.timers(v-if="timeNetwork[0] && timeNetwork[1]")
       p(v-if="timeNetwork[0] && timeNetwork[1]" v-text="'timeNetwork: ' + timeNetwork.join('ms ') + 'ms'")
       p(v-if="timeParse" v-text="'timeParse: ' + timeParse + 'ms'")
       p(v-if="timeGroup" v-text="'timeGroup: ' + timeGroup + 'ms'")
@@ -21,15 +26,20 @@
 
     table
       tbody
+        // Nested template to make lines shorter
         template(v-for="lecturesInOneDay in getLecturesGroupedByDate")
+          // Toggled rendering of past lectures
           template(v-if="showPast || lectureInThePast(getAttribute(lecturesInOneDay[0], 'dtend'))")
+            // First element of an individual date always exists, use it for the "day" header
             tr.day
               td(v-text="formatDateLong(getAttribute(lecturesInOneDay[0], 'dtstart'))" colspan='4')
 
+            // Render lectures, apply studyday class if applicable
             tr.lecture(v-for="lecture in lecturesInOneDay" v-bind:class="{studyday: getAttribute(lecture, 'summary') === 'Studientag'}")
               td.time(v-text="formatDateHourMinutes(getAttribute(lecture, 'dtstart')) + ' - ' + formatDateHourMinutes(getAttribute(lecture, 'dtend'))")
               td.summary
                 p(v-text="getAttribute(lecture, 'summary')")
+                // If the lecture is ongoing, show the remaining time
                 span.timeleft(v-text="timeUntilEnd(getAttribute(lecture, 'dtstart'), getAttribute(lecture, 'dtend'))")
               td.dozent(v-text="getAttribute(lecture, 'description')")
               td.location(v-text="getAttribute(lecture, 'location')")
@@ -49,7 +59,6 @@
         timeNetwork: [],
         timeParse: '',
         timeGroup: '',
-        //title: 'Home',
         showPast: false,
         isCourseListLoaded: false
       }
@@ -65,7 +74,6 @@
         if (parameterCourse !== undefined && this.getCourseList.hasOwnProperty(parameterCourse.toUpperCase())) {
           this.selectedCourse = parameterCourse.toUpperCase()
         } else {
-          console.log(this.getCourseList)
           console.log(parameterCourse + ' not in list')
         }
       }
