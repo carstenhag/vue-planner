@@ -204,7 +204,7 @@
 
 <style type="text/stylus" scoped lang="stylus">
 
-  @import('../stylus/colors.styl')
+  @import '../stylus/colors.styl'
 
   .hello
     max-width 800px
