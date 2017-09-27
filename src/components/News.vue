@@ -1,5 +1,7 @@
 <template lang="pug">
   .news
+    p.source Quelle:&nbsp;
+      a(href="https://stuv-mosbach.de/") StuV-Survival
     ul.posts
       li(v-for="post in getPosts")
         p.right(v-text="formatDateLong(post.date)")
@@ -86,7 +88,7 @@
       background-color: secondaryColor
       color white
       width: 90%
-      margin 10px auto
+      margin 10px auto 20px
       padding 10px 10px
       border-radius 2px
       box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.25);

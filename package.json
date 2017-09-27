@@ -1,7 +1,7 @@
 {
-  "name": "vue-stuv",
+  "name": "vue-planner",
   "version": "0.3.0",
-  "description": "StuV Web-App",
+  "description": "Planner für DHBW",
   "author": "Carsten Hagemann <carsten@chagemann.de>",
   "private": true,
   "scripts": {

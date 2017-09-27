@@ -15,6 +15,7 @@
     input(type='button' v-on:click="parseCalendar()" value="Aktualisieren")
     input(type='button' v-on:click="showPast ? showPast=false : showPast=true" v-bind:value="showPast ? 'Vergangene ausblenden' : 'Vergangene anzeigen'")
     input(type='button' v-on:click="clearLocalStorage()" value="LocalStorage löschen")
+    span Quelle: DHBW Mosbach
     // Various performance timers to check performance on different devices
     //.timers(v-if="timeNetwork[0] && timeNetwork[1]")
       p(v-if="timeNetwork[0] && timeNetwork[1]" v-text="'timeNetwork: ' + timeNetwork.join('ms ') + 'ms'")

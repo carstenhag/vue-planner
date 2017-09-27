@@ -5,7 +5,7 @@ import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
-  plugins: [createPersistedState({key: 'vuex-stuv-0.3.0'})],
+  plugins: [createPersistedState({key: 'vuex-planner-0.3.1'})],
   state: {
     lectures: [],
     groupedLectures: {}, // without this it didn't get persisted after a refresh

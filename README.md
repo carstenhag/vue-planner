@@ -1,9 +1,9 @@
-# vue-stuv
+# Planner für DHBW
 
-Live version at https://stuv.chagemann.de/
+Live version at https://planner.chagemann.de/
 
 ## Goals
-Vue-StuV is a web app that displays course information, current events and news pertaining the StuV.  
+Planner für DHBW is a web app that displays course information for DHBW Mosbach students. Current events and news pertaining to the StuV are also displayed.  
 A future goal is making general information available for students of the DHBW Mosbach.
 
 Currently, a [website with the courses](https://stuv-mosbach.de/survival/index.php?main=8&course=inf16b)

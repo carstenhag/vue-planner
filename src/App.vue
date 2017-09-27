@@ -16,7 +16,7 @@
           router-link(to="/studierendenwerk") Studierendenwerk
     router-view
     br
-    a#github(href="https://github.com/carstenhag/vue-stuv")
+    a#github(href="https://github.com/carstenhag/vue-planner")
       span Das Projekt auf Github
 </template>
 
@@ -25,7 +25,7 @@ export default {
   name: 'app',
   metaInfo: {
     title: 'Home',
-    titleTemplate: '%s | StuV Survival',
+    titleTemplate: '%s | Planner für DHBW Mosbach',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' }

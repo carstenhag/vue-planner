@@ -2,11 +2,12 @@
   .home
     br
     br
-    img.stuv(src="https://stuv-mosbach.de/survival/design/images/StuPa.jpg")
-    p Herzlich Willkommen auf der Vorlesungs-WebApp der StuV!
-    p Für alle Android-Smartphonebesitzer gibt's die Vorlesungspläne auch als App im Playstore:
-    a(href='https://play.google.com/store/apps/details?id=de.stuv_mosbach.stuvapp', target='_blank')
-      img#googleplay(alt='Android app on Google Play', src='https://stuv-mosbach.de/survival/design/images/de-play-badge.png')
+    div.container
+      img.dhbw(src="http://www.dhbw.de/fileadmin/_processed_/csm_2015_11_Auszeichnung_Neubau_DHBW_Mosbach_gross_c5c29ab8bc.jpg")
+      p.source Quelle:&nbsp;
+        a(href="http://www.dhbw.de/en/die-dhbw/aktuelles/detail/2015/11/architektur-schafft-lebensqualitaet-neubau-der-dhbw-mosbach-erhaelt-auszeichnung.html") DHBW Mosbach
+      br
+      p Herzlich Willkommen auf den Planner für die DHBW Mosbach!
 
 </template>
 
@@ -26,9 +27,12 @@
 <style scoped lang="stylus">
   @import '../stylus/colors.styl'
 
-  .stuv
-    width: 40%
-  #googleplay
-    width: 185px
-
+  .container
+    max-width: 650px
+    margin 0 auto
+    img
+      width 100%
+  .source
+    text-align left
+    margin 4px 0
 </style>
