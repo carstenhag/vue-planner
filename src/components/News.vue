@@ -101,7 +101,7 @@
 </style>
 
 <<style lang="stylus">
-  img
+  .posts li img
     max-width: 90%
     height: auto
 </style>

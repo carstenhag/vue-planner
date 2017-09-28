@@ -1,7 +1,8 @@
 <template lang="pug">
   .aktuell
-    p(v-if="dataUnavailable") Bitte das erste mal die Veranstaltungen und die Vorlesungen aktualisieren.
-    template(v-else)
+    p Noch nicht implementiert.
+    //p(v-if="dataUnavailable") Bitte das erste mal die Veranstaltungen und die Vorlesungen aktualisieren.
+    //template(v-else)
       p Geht noch nicht ¯\_(ツ)_/¯
 </template>
 
