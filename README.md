@@ -26,14 +26,47 @@ The following is a list of functional requirements:
 - [ ] Display courses and events of the next two days in an "Aktuell" tab
 - [ ] At lunch times, show a button to open the Mensaplan
 
- 
+
+## Server configuration (caddy)
+
+Had to add a proxy between both the app and the DHBW calendar server, and the StuV WordPress server because javascript needs a CORS header which those servers don't deliver with them.
+
+Any other server apart from `caddy` can be used too, the config just needs to be adapted.
+
+```
+
+proxy.chagemann.de {
+cors
+proxy / http://ics.mosbach.dhbw.de/
+proxy /feed https://stuv-mosbach.de/feed/
+}
+```
+
+Example configuration for the repo with git webhook support, requires [http.git](https://caddyserver.com/docs/http.git) caddy plugin.
+```
+planner.chagemann.de {
+root vue-planner/dist/
+
+# 
+git {
+  repo github.com/carstenhag/vue-planner
+  path ..
+  hook /webhook WEBHOOK_SECRET
+  hook_type github
+  then npm install
+  then npm run build
+}
+
+# Required so for example /vorlesungen/INF16B can be accessed/routed by Vue
+rewrite {
+    regexp .*
+    to {path} /
+}
+
+}
+```
 
 
----
-Had to add a proxy between the app and the DHBW calendar servers because js wants a CORS header. `caddy`'s proxy module
-does just that.
-
-LICENSE has to be added yet, but it will probably be GPL-3-licensed just like the Android app.
 
 ## Build
 Building the app is pretty easy, you just need a working `node.js` and `npm` setup on your machine.  
@@ -48,3 +81,8 @@ npm run dev
 # build for production
 npm run build
 ```
+
+
+---
+
+LICENSE has to be added yet, but it will probably be GPL-3-licensed just like the Android app.
