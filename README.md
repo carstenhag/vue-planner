@@ -13,9 +13,9 @@ As far as I know, the iOS version of the app does not have all features of the A
 are no developers yet that have taken their time to tackle this issue.
 
 My idea was to have a web app that can be developed once and then distributed and used on the three major
-platforms - Web, Android and iOS.
+platforms - Web, Android and iOS. This can be done having one JavaScript codebase that gets deployed as a website. Web browsers can access it directly and native apps simply wrap around this website, e.g. on Android launching a WebView with the URL pointing to our server.
 
-So far I'm aiming to get close to a feature parity with the Android app.
+So far I'm aiming to get close to a feature parity with the Android app, using [Vue.js](https://vuejs.org/)
 
 The following is a list of functional requirements:
 
@@ -25,7 +25,6 @@ The following is a list of functional requirements:
 - [x] Display links to the Studierendenwerk for general information stuff
 - [ ] Display courses and events of the next two days in an "Aktuell" tab
 - [ ] At lunch times, show a button to open the Mensaplan
-
 
 ## Server configuration (caddy)
 
