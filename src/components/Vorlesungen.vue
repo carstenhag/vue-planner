@@ -16,34 +16,27 @@
     input(type='button' v-on:click="showPast ? showPast=false : showPast=true" v-bind:value="showPast ? 'Vergangene ausblenden' : 'Vergangene anzeigen'")
     input(type='button' v-on:click="clearLocalStorage()" value="LocalStorage löschen")
     span Quelle: DHBW Mosbach
-    // Various performance timers to check performance on different devices
-    //.timers(v-if="timeNetwork[0] && timeNetwork[1]")
-      p(v-if="timeNetwork[0] && timeNetwork[1]" v-text="'timeNetwork: ' + timeNetwork.join('ms ') + 'ms'")
-      p(v-if="timeParse" v-text="'timeParse: ' + timeParse + 'ms'")
-      p(v-if="timeGroup" v-text="'timeGroup: ' + timeGroup + 'ms'")
-      p(v-else)
 
     p(v-if="selectedCourse === ''") Bitte wähle einen Kurs aus der Liste aus.
 
-    table
-      tbody
+    ul
         // Nested template to make lines shorter
         template(v-for="lecturesInOneDay in getLecturesGroupedByDate")
           // Toggled rendering of past lectures
           template(v-if="showPast || lectureInThePast(getAttribute(lecturesInOneDay[0], 'dtend'))")
-            // First element of an individual date always exists, use it for the "day" header
-            tr.day
-              td(v-text="formatDateLong(getAttribute(lecturesInOneDay[0], 'dtstart'))" colspan='4')
+            li.day
+              // First element of an individual date always exists, use it for the "day" header
+              p.day-header(v-text="formatDateLong(getAttribute(lecturesInOneDay[0], 'dtstart'))" colspan='4')
 
-            // Render lectures, apply studyday class if applicable
-            tr.lecture(v-for="lecture in lecturesInOneDay" v-bind:class="{studyday: getAttribute(lecture, 'summary') === 'Studientag'}")
-              td.time(v-text="formatDateHourMinutes(getAttribute(lecture, 'dtstart')) + ' - ' + formatDateHourMinutes(getAttribute(lecture, 'dtend'))")
-              td.summary
-                p(v-text="getAttribute(lecture, 'summary')")
-                // If the lecture is ongoing, show the remaining time
-                span.timeleft(v-text="timeUntilEnd(getAttribute(lecture, 'dtstart'), getAttribute(lecture, 'dtend'))")
-              td.dozent(v-text="getAttribute(lecture, 'description')")
-              td.location(v-text="getAttribute(lecture, 'location')")
+              // Render lectures, apply studyday class if applicable
+              .lecture(v-for="lecture in lecturesInOneDay" v-bind:class="{studyday: getAttribute(lecture, 'summary') === 'Studientag'}")
+                span.time(v-text="formatDateHourMinutes(getAttribute(lecture, 'dtstart')) + ' - ' + formatDateHourMinutes(getAttribute(lecture, 'dtend'))")
+                span.summary
+                  span(v-text="getAttribute(lecture, 'summary')")
+                  // If the lecture is ongoing, show the remaining time
+                  span.timeleft(v-text="timeUntilEnd(getAttribute(lecture, 'dtstart'), getAttribute(lecture, 'dtend'))")
+                span.dozent(v-text="getAttribute(lecture, 'description')")
+                span.location(v-text="getAttribute(lecture, 'location')")
 
     br
 </template>
@@ -243,36 +236,40 @@
       //width: initial
       box-shadow none
 
-    tbody
-      @media screen and (max-width: 800px)
-        font-size 0.9rem
-
-
-    tr td
-      padding: 10px 0
-      @media screen and (max-width: 800px)
-        padding 8px 0
-
-    tr.lecture td:first-child
-      padding-left 16px
-
-      @media screen and (max-width: 800px)
-        padding-left 8px
-
-    tr.lecture td:last-child
-      @media screen and (max-width: 800px)
-        padding-right 8px
-
     p
       padding 0
       margin 0
 
-  .day td
-    background-color: tableDayBackgroundColor
-    text-align center
+  .day
+    display: inline-block
+    width: 100%
+    margin 6px 0
+    background-color secondaryColor
+    color: white
+    box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.05);
 
+  .day-header
+    background-color: lighten(secondaryColor, 10)
+    text-align center
+    margin 0
+    padding 6px 2px
     @media screen and (max-width: 800px)
       font-size 1rem
+
+  .lecture
+    display: flex
+    justify-content: space-between
+    margin: 8px 0
+
+    :first-child
+      margin-left: 8px
+
+    :last-child
+      margin-right: 8px
+
+    :nth-child(n)
+      flex-grow: 1
+      flex-basis: auto
 
 
   .timeleft
