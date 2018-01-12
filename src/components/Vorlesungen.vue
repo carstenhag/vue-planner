@@ -1,6 +1,6 @@
 <template lang="pug">
   .hello
-    h1(v-text="'Kurs ' + selectedCourse")
+    h1.kurs-header(v-text="'Kurs ' + selectedCourse")
 
     // Populate the select-box with option fields
     select(v-model="selectedCourse" v-bind:disabled="!isCourseListLoaded")
@@ -14,8 +14,7 @@
 
     input(type='button' v-on:click="parseCalendar()" value="Aktualisieren")
     input(type='button' v-on:click="showPast ? showPast=false : showPast=true" v-bind:value="showPast ? 'Vergangene ausblenden' : 'Vergangene anzeigen'")
-    input(type='button' v-on:click="clearLocalStorage()" value="LocalStorage löschen")
-    span Quelle: DHBW Mosbach
+    span.source Quelle: DHBW Mosbach
 
     p(v-if="selectedCourse === ''") Bitte wähle einen Kurs aus der Liste aus.
 
@@ -222,6 +221,8 @@
       padding 8px 12px
       margin-right 20px
 
+  .kurs-header, .source
+    margin-left: 8px
 
   table
     text-align left
@@ -253,12 +254,10 @@
     text-align center
     margin 0
     padding 6px 2px
-    @media screen and (max-width: 800px)
-      font-size 1rem
 
   .lecture
-    display: flex
-    justify-content: space-between
+    display: grid
+    grid-template-columns: 15% 50% 20% 15%
     margin: 8px 0
 
     :first-child
@@ -267,13 +266,34 @@
     :last-child
       margin-right: 8px
 
-    :nth-child(n)
-      flex-grow: 1
-      flex-basis: auto
-
+    //:nth-child(n)
 
   .timeleft
     color green
+
+  @media screen and (max-width: 800px)
+
+    .day-header
+      font-size: 1.2rem
+    .lecture
+      display: flex
+      flex-wrap: wrap
+      .summary
+        order 1
+        width: 100%
+        font-size: 1.1rem
+        font-weight: 700
+      .time
+        order 2
+        width: 100%
+      .location
+        order 3
+        width: 70%
+        margin-left: 8px
+      .dozent
+        order 4
+        width: calc(30% - 16px - 8px)
+        text-align: right
 
   .hello
     input[type=button]
