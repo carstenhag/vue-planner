@@ -211,8 +211,6 @@
     max-width 800px
     margin 0 auto
     text-align left
-    //@media screen and (max-width: 800px)
-      //width initial
     h1
       background-color: secondaryColor
       color white
@@ -223,23 +221,6 @@
 
   .kurs-header, .source
     margin-left: 8px
-
-  table
-    text-align left
-    //min-width 100%
-    width: 100%
-    max-width 800px
-    margin 0 auto
-    border-spacing 0
-    box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.35);
-
-    @media screen and (max-width: 800px)
-      //width: initial
-      box-shadow none
-
-    p
-      padding 0
-      margin 0
 
   .day
     display: inline-block
