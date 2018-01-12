@@ -27,15 +27,19 @@
               // First element of an individual date always exists, use it for the "day" header
               p.day-header(v-text="formatDateLong(getAttribute(lecturesInOneDay[0], 'dtstart'))" colspan='4')
 
-              // Render lectures, apply studyday class if applicable
-              .lecture(v-for="lecture in lecturesInOneDay" v-bind:class="{studyday: getAttribute(lecture, 'summary') === 'Studientag'}")
-                span.time(v-text="formatDateHourMinutes(getAttribute(lecture, 'dtstart')) + ' - ' + formatDateHourMinutes(getAttribute(lecture, 'dtend'))")
-                span.summary
-                  span(v-text="getAttribute(lecture, 'summary')")
-                  // If the lecture is ongoing, show the remaining time
-                  span.timeleft(v-text="timeUntilEnd(getAttribute(lecture, 'dtstart'), getAttribute(lecture, 'dtend'))")
-                span.dozent(v-text="getAttribute(lecture, 'description')")
-                span.location(v-text="getAttribute(lecture, 'location')")
+              template(v-for="lecture in lecturesInOneDay")
+                // Render lectures, apply studyday class if applicable
+                .lecture(v-bind:class="{studyday: getAttribute(lecture, 'summary') === 'Studientag'}")
+                  span.time(v-text="formatDateHourMinutes(getAttribute(lecture, 'dtstart')) + ' - ' + formatDateHourMinutes(getAttribute(lecture, 'dtend'))")
+                  span.summary
+                    span(v-text="getAttribute(lecture, 'summary')")
+                    // If the lecture is ongoing, show the remaining time
+                    span.timeleft(v-text="timeUntilEnd(getAttribute(lecture, 'dtstart'), getAttribute(lecture, 'dtend'))")
+                  span.dozent(v-text="getAttribute(lecture, 'description')")
+                  span.location(v-text="getAttribute(lecture, 'location')")
+                // If there is more than 1 lecture in a day, print a hr. Don't print if current element is the last one.
+                // We only want hr between lectures, not at the beginning or the end.
+                hr.lecture-delimiter(v-if="lecturesInOneDay.length > 1 && lecture != lecturesInOneDay[lecturesInOneDay.length - 1]")
 
     br
 </template>
@@ -247,15 +251,17 @@
     :last-child
       margin-right: 8px
 
-    //:nth-child(n)
-
   .timeleft
     color green
+
+  .lecture-delimiter
+    margin: 0
+    border: 1px solid lighten(secondaryColor, 5);
 
   @media screen and (max-width: 800px)
 
     .day-header
-      font-size: 1.2rem
+      font-size: 1.1rem
     .lecture
       display: flex
       flex-wrap: wrap
@@ -263,17 +269,17 @@
         order 1
         width: 100%
         font-size: 1.1rem
-        font-weight: 700
+        font-weight: 500
       .time
         order 2
         width: 100%
       .location
         order 3
-        width: 70%
+        width: 50%
         margin-left: 8px
       .dozent
         order 4
-        width: calc(30% - 16px - 8px)
+        width: calc(50% - 16px - 8px)
         text-align: right
 
   .hello
