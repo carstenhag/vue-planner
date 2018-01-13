@@ -80,19 +80,19 @@
 
   .events,
     text-align center
-    max-width: 600px
+    max-width: 800px
     margin: 0 auto
 
     li
       display block
+      box-sizing: border-box;  // https://stackoverflow.com/a/32502321/3991578
       background-color: secondaryColor
       color white
-      width: 90%
+      width: 100%
       margin 10px auto 20px
       padding 10px 10px
       border-radius 2px
       box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.25);
-
 
       p.title
         margin 0
@@ -105,5 +105,8 @@
         word-wrap: break-word;
         font-family: inherit;
 
+  @media screen and (max-width: 800px)
+    .events li
+      width: 90%
 
 </style>

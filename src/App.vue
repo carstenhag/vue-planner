@@ -35,6 +35,8 @@ export default {
 </script>
 
 <style lang="stylus">
+  @import 'stylus/colors.styl'
+
   body
     @media screen and (max-width: 800px)
       margin 0
@@ -44,7 +46,7 @@ export default {
     -moz-osx-font-smoothing: grayscale
     text-align: center
     color: #2c3e50
-    margin-top: 60px
+    margin-top: 20px
 
     @media screen and (max-width: 800px)
       margin-top 0
@@ -61,5 +63,5 @@ export default {
     margin: 0 10px
 
   a
-    color: #42b983
+    color: mainRed
 </style>

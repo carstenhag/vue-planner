@@ -3,7 +3,7 @@
     p.source Quelle:&nbsp;
       a(href="https://stuv-mosbach.de/") StuV-Survival
     ul.posts
-      li(v-for="post in getPosts")
+      li.post(v-for="post in getPosts")
         p.right(v-text="formatDateLong(post.date)")
         p(v-html="post.content.rendered")
 </template>
@@ -80,14 +80,15 @@
 
   .posts
     text-align center
-    max-width: 600px
+    max-width: 800px
     margin: 0 auto
 
     li
       display block
+      box-sizing: border-box;  // https://stackoverflow.com/a/32502321/3991578
       background-color: secondaryColor
       color white
-      width: 90%
+      width: 100%
       margin 10px auto 20px
       padding 10px 10px
       border-radius 2px
@@ -98,10 +99,24 @@
     padding-right 20px
     padding-bottom -20px
     margin 8px 0 -8px
+
+  @media screen and (max-width: 800px)
+    .posts li
+      width: 90%
+
 </style>
 
-<<style lang="stylus">
+<!-- Inserted HTML (each post) can not be targeted with scoped CSS -->
+<style lang="stylus">
+@import '../stylus/colors.styl'
   .posts li img
     max-width: 90%
     height: auto
+
+  .post a
+    color lighten(mainRed, 25)
+    text-overflow: ellipsis;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    
 </style>
