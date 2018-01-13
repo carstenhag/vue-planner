@@ -3,7 +3,7 @@
     p.source Quelle: StuV-Kalendar
     ul.events
       li(v-for="event in getEvents")
-        p.title(v-text="formatDateLong(event.start.dateTime) + ' ' + formatDateHourMinutes(event.start.dateTime) +  ' – ' + formatDateHourMinutes(event.end.dateTime) ")
+        p.title(v-text="buildEventTitle(event)")
         p.description(v-text="event.description")
 </template>
 
@@ -48,6 +48,13 @@
       formatDateHourMinutes (time) {
         return this.$options.filters.formatDateToHour(time)
       },
+      buildEventTitle (event) {
+        if (event.start.date) {
+          return this.formatDateLong(event.start.date)
+        } else {
+          return this.formatDateLong(event.start.dateTime) + ' ' + this.formatDateHourMinutes(event.start.dateTime) + ' – ' + this.formatDateHourMinutes(event.end.dateTime)
+        }
+      },
       printElement (el) {
         console.log(el)
         return el
@@ -56,9 +63,9 @@
         let filteredEvents = []
         for (let event of events) {
           // Filter out events with weird timestamp and events older than 7 days
-          // TODO: Don't just ignore all events without (presumably) hour - all-day events?
-          if (event.start.dateTime !== undefined &&
-              moment().subtract(7, 'days').isSameOrBefore(event.start.dateTime, 'day')) {
+          // refactor to make prettier
+          if (event.start.dateTime !== undefined && moment().subtract(7, 'days').isSameOrBefore(event.start.dateTime, 'day') ||
+              (event.start.date !== undefined && moment().subtract(7, 'days').isSameOrBefore(event.start.date, 'day'))) {
             filteredEvents.push(event)
           }
         }
