@@ -114,7 +114,7 @@
     height: auto
 
   .post a
-    color lighten(mainRed, 25)
+    color lighten(primaryColor, 25)
     text-overflow: ellipsis;
     white-space: pre-wrap;
     word-wrap: break-word;

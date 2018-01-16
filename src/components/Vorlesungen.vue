@@ -186,7 +186,7 @@
       },
       timeUntilEnd (startTime, endTime) {
         if (moment().isBetween(moment(startTime), moment(endTime))) {
-          return 'Vorlesung zu Ende ' + moment().to(endTime)
+          return ' Vorlesung zu Ende ' + moment().to(endTime)
         }
       },
       lectureInThePast (endTime) {
@@ -252,7 +252,7 @@
       margin-right: 8px
 
   .timeleft
-    color green
+    color lighten(primaryColor, 25)
 
   .lecture-delimiter
     margin: 0
