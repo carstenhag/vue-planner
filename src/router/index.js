@@ -6,7 +6,6 @@ import Vorlesungen from '@/components/Vorlesungen'
 import Veranstaltungen from '@/components/Veranstaltungen'
 import News from '@/components/News'
 import Studierendenwerk from '@/components/Studierendenwerk'
-import NotFound from '@/components/NotFound'
 import Meta from 'vue-meta'
 
 Vue.use(Router)
@@ -18,7 +17,7 @@ export default new Router({
   routes: [
     {
       path: '*',
-      component: NotFound
+      component: Home
     },
     {
       path: '/',
@@ -31,7 +30,7 @@ export default new Router({
       component: Aktuell
     },
     {
-      path: '/vorlesungen', // extend with course selecting
+      path: '/vorlesungen',
       name: 'Vorlesungen',
       component: Vorlesungen
     },
