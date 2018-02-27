@@ -24,7 +24,7 @@
         
       //span.source Quelle: DHBW Mosbach
 
-      p(v-if="selectedCourse === ''") Bitte wähle einen Kurs aus der Liste aus.
+    p.course-missing(v-if="selectedCourse === ''") Bitte wähle einen Kurs aus der Liste aus.
 
     ul
         // Nested template to make lines shorter
@@ -256,6 +256,10 @@
 
   .icon--colored
     color: primaryColor
+
+  .course-missing
+    text-align: center
+    padding: 0 8px
 
   .day
     display: inline-block
