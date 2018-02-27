@@ -18,9 +18,9 @@
 
       .icon-group
         span(v-on:click="parseCalendar()")
-          icon.icon(name='refresh'  scale='1.5' :spin="isUpdating")
+          icon.icon(name='refresh'  scale='1.5' v-bind:spin="isUpdating" v-bind:class="{ 'icon--colored': isUpdating }")
         span(v-on:click="showPast ? showPast=false : showPast=true")
-          icon.icon(name='history' scale='1.5')
+          icon.icon(name='history' scale='1.5' v-bind:class="{ 'icon--colored': showPast }")
         
       //span.source Quelle: DHBW Mosbach
 
@@ -254,6 +254,9 @@
   .icon
     color: secondaryColor
 
+  .icon--colored
+    color: primaryColor
+
   .day
     display: inline-block
     width: 100%
@@ -290,6 +293,7 @@
 
     .hello h1
       font-size: 1.0rem
+      margin-left: 12px
 
     .day-header
       font-size: 1.1rem
