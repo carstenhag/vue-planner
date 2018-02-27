@@ -1,22 +1,30 @@
 <template lang="pug">
   .hello
-    h1.kurs-header(v-text="'Kurs ' + selectedCourse")
 
-    // Populate the select-box with option fields
-    select(v-model="selectedCourse" v-bind:disabled="!isCourseListLoaded")
-      // Default option to show placeholder
-      option(value="" hidden disabled selected) Kurs auswählen
-      // Template element to be able to iterate
-      template(v-for="(course, key) in getCourseList")
-        option(v-bind:value="key") {{key}}
+    .header-bar
+      h1.kurs-header(v-text="'Kurs ' + selectedCourse")
 
-    br
+      // Populate the select-box with option fields
+      select.select-course(v-model="selectedCourse" v-bind:disabled="!isCourseListLoaded")
+        // Default option to show placeholder
+        option(value="" hidden disabled selected) Kurs auswählen
+        // Template element to be able to iterate
+        template(v-for="(course, key) in getCourseList")
+          option(v-bind:value="key") {{key}}
 
-    input(type='button' v-on:click="parseCalendar()" value="Aktualisieren")
-    input(type='button' v-on:click="showPast ? showPast=false : showPast=true" v-bind:value="showPast ? 'Vergangene ausblenden' : 'Vergangene anzeigen'")
-    span.source Quelle: DHBW Mosbach
+      // Empty div, with flex-grow: 1 property. As .kurs-header is a flexbox, this div grows and
+      // takes up the space between surrounding flexbox items.
+      .filler
 
-    p(v-if="selectedCourse === ''") Bitte wähle einen Kurs aus der Liste aus.
+      .icon-group
+        span(v-on:click="parseCalendar()")
+          icon.icon(name='refresh'  scale='1.5' :spin="isUpdating")
+        span(v-on:click="showPast ? showPast=false : showPast=true")
+          icon.icon(name='history' scale='1.5')
+        
+      //span.source Quelle: DHBW Mosbach
+
+      p(v-if="selectedCourse === ''") Bitte wähle einen Kurs aus der Liste aus.
 
     ul
         // Nested template to make lines shorter
@@ -57,7 +65,8 @@
         timeParse: '',
         timeGroup: '',
         showPast: false,
-        isCourseListLoaded: false
+        isCourseListLoaded: false,
+        isUpdating: false
       }
     },
     metaInfo () {
@@ -124,6 +133,8 @@
         let URL = this.getCourseList[this.selectedCourse]
         URL = URL.replace('http://ics.mosbach.dhbw.de/', 'https://proxy.chagemann.de/')
 
+        this.isUpdating = true
+
         this.$http.get(URL).then(response => {
           const t2 = performance.now()
           this.timeNetwork[0] = ('' + (t2 - t1)).substring(0, 5)
@@ -136,8 +147,10 @@
 
           // not sure if these should be here
           this.$store.commit('updateGroupedLectures', this.groupLecturesByDate)
+          this.isUpdating = false
           this.parseCourseList() // FIX: Update this only if URL is undefined
         }, response => {
+          this.isUpdating = false
           console.log(response)
         })
       },
@@ -221,10 +234,25 @@
       font-size 1.2rem
       display inline-block
       padding 8px 12px
-      margin-right 20px
+      margin: 0 12px 0 0
 
-  .kurs-header, .source
-    margin-left: 8px
+  .header-bar
+    margin: 12px 0
+    display: flex
+    align-items: center;
+
+  .filler
+    flex-grow: 1
+
+  .icon-group
+    padding: 0 8px
+
+  .icon-group > span
+    display inline-block
+    margin: 4px 10px 0
+
+  .icon
+    color: secondaryColor
 
   .day
     display: inline-block
@@ -259,6 +287,9 @@
     border: 1px solid lighten(secondaryColor, 5);
 
   @media screen and (max-width: 800px)
+
+    .hello h1
+      font-size: 1.0rem
 
     .day-header
       font-size: 1.1rem
