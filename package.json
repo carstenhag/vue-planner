@@ -1,6 +1,6 @@
 {
   "name": "vue-planner",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Planner für DHBW",
   "author": "Carsten Hagemann <carsten@chagemann.de>",
   "private": true,
