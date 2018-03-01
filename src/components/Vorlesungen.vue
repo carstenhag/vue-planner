@@ -33,6 +33,7 @@
                   span.time(v-text="formatDateHourMinutes(getAttribute(lecture, 'dtstart')) + ' - ' + formatDateHourMinutes(getAttribute(lecture, 'dtend'))")
                   span.summary
                     span(v-text="getAttribute(lecture, 'summary')")
+
                     // If the lecture is ongoing, show the remaining time
                     span.timeleft(v-text="timeUntilEnd(getAttribute(lecture, 'dtstart'), getAttribute(lecture, 'dtend'))")
                   span.dozent(v-text="getAttribute(lecture, 'description')")
@@ -169,8 +170,8 @@
       },
       getAttribute (lecture, attribute) {
         for (let item of lecture[1]) {
-          if (item[0] === attribute) {
-            return item[3]
+          if (item[0] === attribute) { // item[0] is the name of the attribute, for example "dstart" - Date start
+            return item[3] // item[3] is the value of the attribute, for example "2018-03-29T12:45:00"
           }
         }
       },
@@ -186,7 +187,7 @@
       },
       timeUntilEnd (startTime, endTime) {
         if (moment().isBetween(moment(startTime), moment(endTime))) {
-          return ' Vorlesung zu Ende ' + moment().to(endTime)
+          return 'Vorlesung zu Ende ' + moment().to(endTime)
         }
       },
       lectureInThePast (endTime) {
@@ -245,14 +246,23 @@
     grid-template-columns: 15% 50% 20% 15%
     margin: 8px 0
 
-    :first-child
+    // & means the above element, so in this case .lecture
+    & > :first-child
       margin-left: 8px
 
     :last-child
       margin-right: 8px
 
+  .summary
+    margin-left: 8px
+
   .timeleft
     color lighten(primaryColor, 25)
+    
+    white-space:pre;
+
+    &:before
+      content: '\A';
 
   .lecture-delimiter
     margin: 0
