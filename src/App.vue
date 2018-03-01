@@ -4,7 +4,7 @@
       ul
         li
           router-link(to="/") Home
-        li
+        //li
           router-link(to="/aktuell") Aktuell
         li
           router-link(to="/vorlesungen") Vorlesungen

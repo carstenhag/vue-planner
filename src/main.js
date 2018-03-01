@@ -27,6 +27,13 @@ Vue.http.interceptors.push((request, next) => {
 
 import {store} from './store'
 
+// https://github.com/Justineo/vue-awesome
+// import all icons if you don't care about bundle size
+import 'vue-awesome/icons'
+
+import Icon from 'vue-awesome/components/Icon'
+Vue.component('icon', Icon)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
