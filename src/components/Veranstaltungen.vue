@@ -29,6 +29,7 @@
     },
     methods: {
       parseCalendar () {
+        // https://calendar.google.com/calendar/r/month/2018/9/12?eid=MWxjY2xndTNkMTY3cGYxN3E4MWU2NTlidWogYXN0YS5kaGJ3LmRlXzA4bWtjdXFjcnBwcThjZzh2bHV0ZHNncGpnQGc&ctz=Europe/Berlin&pli=1&sf=true
         let URL = 'https://www.googleapis.com/calendar/v3/calendars/asta.dhbw.de_08mkcuqcrppq8cg8vlutdsgpjg@group.calendar.google.com/events'
         URL += '?key=AIzaSyC6mAcPZYgvYcWW_2w5e3Oy7LOHfj-wTMM'
 

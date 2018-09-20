@@ -17,6 +17,10 @@
       .filler
 
       .icon-group
+        span(v-on:click="jumpToCurrentDay()")
+          // Cooler mit https://github.com/edent/Dynamic-SVG-Calendar-Icon/blob/master/calendar.svg
+          icon.icon(name='arrow-down'  scale='1.5')
+
         span(v-on:click="parseCalendar()")
           icon.icon(name='refresh'  scale='1.5' v-bind:spin="isUpdating" v-bind:class="{ 'icon--colored': isUpdating }")
         span(v-on:click="showPast ? showPast=false : showPast=true")
@@ -31,7 +35,7 @@
         template(v-for="lecturesInOneDay in getLecturesGroupedByDate")
           // Toggled rendering of past lectures
           template(v-if="showPast || lectureInThePast(getAttribute(lecturesInOneDay[0], 'dtend'))")
-            li.day
+            li.day(v-bind:id="formatDateISO8601Short(getAttribute(lecturesInOneDay[0], 'dtstart'))")
               // First element of an individual date always exists, use it for the "day" header
               p.day-header(v-text="formatDateLong(getAttribute(lecturesInOneDay[0], 'dtstart'))" colspan='4')
 
@@ -63,8 +67,6 @@
     data () {
       return {
         timeNetwork: [],
-        timeParse: '',
-        timeGroup: '',
         showPast: false,
         isCourseListLoaded: false,
         isUpdating: false
@@ -76,6 +78,10 @@
       }
     },
     mounted () {
+      if (this.$store.state.selectedCourse !== null) {
+        this.$router.replace('/vorlesungen/' + this.$store.state.selectedCourse)
+      }
+
       let handleRoute = function () {
         let parameterCourse = this.$route.params.course
         if (parameterCourse !== undefined && this.getCourseList.hasOwnProperty(parameterCourse.toUpperCase())) {
@@ -86,6 +92,8 @@
       }
 
       this.parseCourseList(handleRoute)
+
+      this.parseCalendar()
     },
     computed: {
       'selectedCourse': {
@@ -109,8 +117,6 @@
         return this.$store.state.courseList
       },
       groupLecturesByDate () {
-        const t1 = performance.now()
-
         let groupedLectures = {}
 
         for (let lecture of this.getLectures) {
@@ -120,31 +126,22 @@
           }
           groupedLectures[currentFormattedDate].push(lecture)
         }
-
-        const t2 = performance.now()
-        this.timeGroup = ('' + (t2 - t1)).substring(0, 5)
         return groupedLectures
       }
     },
     methods: {
       // should probably split into an update() method
       parseCalendar () {
-        const t1 = performance.now()
-
         let URL = this.getCourseList[this.selectedCourse]
-        URL = URL.replace('http://ics.mosbach.dhbw.de/', 'https://proxy.chagemann.de/')
+        URL = URL.replace('http://ics.mosbach.dhbw.de/', 'https://proxy.chagemann.de/') // CORS Proxy, because the dhbw won't give us that header
 
         this.isUpdating = true
 
         this.$http.get(URL).then(response => {
-          const t2 = performance.now()
-          this.timeNetwork[0] = ('' + (t2 - t1)).substring(0, 5)
           const icsData = response.body
 
           const parsedLectures = Ical.parse(icsData)[2].slice(1, -1) // not sure if also applies to other curses
           this.$store.commit('updateLectures', parsedLectures) // do we even need normal lectures persisted anymore?
-          const t3 = performance.now()
-          this.timeParse = ('' + (t3 - t2)).substring(0, 5)
 
           // not sure if these should be here
           this.$store.commit('updateGroupedLectures', this.groupLecturesByDate)
@@ -156,11 +153,7 @@
         })
       },
       parseCourseList (callback) {
-        const t1 = performance.now()
-
         this.$http.get('https://proxy.chagemann.de/ics/calendars.list').then(response => {
-          const t2 = performance.now()
-          this.timeNetwork[1] = ('' + (t2 - t1)).substring(0, 5)
           const data = response.body
           const lines = data.split('\n')
           let courseList = {}
@@ -197,6 +190,21 @@
       },
       formatDateLong (time) {
         return this.$options.filters.formatDateToMonthDay(time)
+      },
+      formatDateISO8601Short (time) {
+        return this.$options.filters.formatDateISO8601Short(time)
+      },
+      jumpToCurrentDay () {
+        var date = moment()
+        for (let i = 0; i < 200; i++) { // 200 should be more than enough for 6+ months between uni lessons
+          if (document.getElementById(date.format('YYYY-MM-DD')) !== null) {
+            document.getElementById(date.format('YYYY-MM-DD')).scrollIntoView()
+            console.log('Found date after ' + i + ' iterations')
+            break
+          } else {
+            date.subtract(1, 'days')
+          }
+        }
       },
       timeUntilEnd (startTime, endTime) {
         if (moment().isBetween(moment(startTime), moment(endTime))) {

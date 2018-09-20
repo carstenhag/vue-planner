@@ -8,9 +8,9 @@
           router-link(to="/aktuell") Aktuell
         li
           router-link(to="/vorlesungen") Vorlesungen
-        li
+        //li
           router-link(to="/veranstaltungen") Veranstaltungen
-        li
+        //li
           router-link(to="/news") News
         li
           router-link(to="/studierendenwerk") Studierendenwerk
