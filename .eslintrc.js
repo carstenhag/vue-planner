@@ -24,6 +24,8 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     // erlaubt kommentare, ohne dass diese ein leerzeichen benötigen
-    'spaced-comment': 0
+    'spaced-comment': 0,
+    // notwendig, weil die rule einfach mist ist
+    "no-trailing-spaces": 0
   }
 }
