@@ -47,7 +47,7 @@
                     span(v-text="getAttribute(lecture, 'summary')")
 
                     // If the lecture is ongoing, show the remaining time
-                    span.timeleft(v-text="timeUntilEnd(getAttribute(lecture, 'dtstart'), getAttribute(lecture, 'dtend'))")
+                    span.timeleft(:key="updateTimeLeft" v-text="timeUntilEnd(getAttribute(lecture, 'dtstart'), getAttribute(lecture, 'dtend'))")
                   span.dozent(v-text="getAttribute(lecture, 'description')")
                   span.location(v-text="getAttribute(lecture, 'location')")
                 // If there is more than 1 lecture in a day, print a hr. Don't print if current element is the last one.
@@ -59,7 +59,6 @@
 
 <script>
   const Ical = require('ical.js')
-
   import moment from 'moment'
 
   export default {
@@ -69,7 +68,8 @@
         timeNetwork: [],
         showPast: false,
         isCourseListLoaded: false,
-        isUpdating: false
+        isUpdating: false,
+        updateTimeLeft: 0 // https://github.com/vuejs/Discussion/issues/356#issuecomment-336060875
       }
     },
     metaInfo () {
@@ -77,14 +77,23 @@
         title: 'Vorlesungen ' + this.selectedCourse
       }
     },
+    created () {
+      
+    },
     mounted () {
-      if (this.$store.state.selectedCourse !== null) {
+      this.updateTimeLeft++ // seems to work fine.
+
+      // When a course is selected, make sure the path represents this.
+      // Make sure to let a new course be selected via new path
+      // eg if we have INF16B saved, /vorlesungen/INF16A should select INF16A.
+      if (this.$store.state.selectedCourse !== '' && this.$route.params.course === '') {
         this.$router.replace('/vorlesungen/' + this.$store.state.selectedCourse)
       }
 
       let handleRoute = function () {
         let parameterCourse = this.$route.params.course
-        if (parameterCourse !== undefined && this.getCourseList.hasOwnProperty(parameterCourse.toUpperCase())) {
+        if (parameterCourse !== undefined &&
+        this.getCourseList.hasOwnProperty(parameterCourse.toUpperCase())) {
           this.selectedCourse = parameterCourse.toUpperCase()
         } else {
           console.log(parameterCourse + ' not in list')
@@ -132,6 +141,10 @@
     methods: {
       // should probably split into an update() method
       parseCalendar () {
+        if (this.selectedCourse === '') {
+          return
+        }
+
         let URL = this.getCourseList[this.selectedCourse]
         URL = URL.replace('http://ics.mosbach.dhbw.de/', 'https://proxy.chagemann.de/') // CORS Proxy, because the dhbw won't give us that header
 
@@ -140,7 +153,7 @@
         this.$http.get(URL).then(response => {
           const icsData = response.body
 
-          const parsedLectures = Ical.parse(icsData)[2].slice(1, -1) // not sure if also applies to other curses
+          const parsedLectures = Ical.parse(icsData)[2].slice(1, -1) // not sure if also applies to other courses
           this.$store.commit('updateLectures', parsedLectures) // do we even need normal lectures persisted anymore?
 
           // not sure if these should be here
@@ -199,7 +212,7 @@
         for (let i = 0; i < 200; i++) { // 200 should be more than enough for 6+ months between uni lessons
           if (document.getElementById(date.format('YYYY-MM-DD')) !== null) {
             document.getElementById(date.format('YYYY-MM-DD')).scrollIntoView()
-            console.log('Found date after ' + i + ' iterations')
+            //console.log('Found date after ' + i + ' iterations')
             break
           } else {
             date.subtract(1, 'days')
