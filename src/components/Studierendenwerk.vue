@@ -41,7 +41,7 @@
 
     li
       display inline-block
-      padding 8px 0
+      padding 12px 0
       width: 50%;
       vertical-align: middle;
 

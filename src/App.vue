@@ -2,8 +2,6 @@
   #app
     nav
       ul
-        li
-          router-link(to="/") Home
         //li
           router-link(to="/aktuell") Aktuell
         li
@@ -14,6 +12,8 @@
           router-link(to="/news") News
         li
           router-link(to="/studierendenwerk") Studierendenwerk
+        li
+          router-link(to="/ueber") Über
     router-view
     br
     a#github(href="https://github.com/carstenhag/vue-planner")
@@ -63,5 +63,9 @@ export default {
     margin: 0 10px
 
   a
-    color: mainRed
+    background-color: lighten(secondaryColor, 10)
+    color: white
+    padding 5px 12px
+    border-radius 2px
+    text-decoration: none
 </style>

@@ -28,7 +28,18 @@
         
       //span.source Quelle: DHBW Mosbach
 
-    p.course-missing(v-if="selectedCourse === ''") Bitte wähle einen Kurs aus der Liste aus.
+    div.course-missing(v-if="selectedCourse === ''")
+      br
+      br
+      br
+      br
+      icon.icon(name='address-book' scale='4')
+      br
+      p Bitte wähle einen Kurs aus der Liste aus.
+      br
+      br
+      br
+      
 
     ul
         // Nested template to make lines shorter

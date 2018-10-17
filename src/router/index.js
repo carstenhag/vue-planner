@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/components/Home'
+import Ueber from '@/components/Ueber'
 import Aktuell from '@/components/Aktuell'
 import Vorlesungen from '@/components/Vorlesungen'
 import Veranstaltungen from '@/components/Veranstaltungen'
@@ -17,13 +17,9 @@ export default new Router({
   routes: [
     {
       path: '*',
-      component: Home
+      redirect: { name: 'Vorlesungen' }
     },
-    {
-      path: '/',
-      name: 'Home',
-      component: Home
-    },
+
     {
       path: '/aktuell',
       name: 'Aktuell',
@@ -53,6 +49,11 @@ export default new Router({
       path: '/studierendenwerk',
       name: 'Studierendenwerk',
       component: Studierendenwerk
+    },
+    {
+      path: '/ueber',
+      name: 'Ueber',
+      component: Ueber
     }
   ]
 })

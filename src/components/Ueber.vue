@@ -1,9 +1,10 @@
 <template lang="pug">
-  .home
+  .ueber
     br
     br
     div.container
       img.dhbw(src="http://www.dhbw.de/fileadmin/_processed_/9/7/csm_2015_11_Auszeichnung_Neubau_DHBW_Mosbach_gross_a732d90e79.jpg")
+      br
       p.source Quelle:&nbsp;
         a(href="http://www.dhbw.de/de/die-dhbw/aktuelles/detail/2015/11/architektur-schafft-lebensqualitaet-neubau-der-dhbw-mosbach-erhaelt-auszeichnung.html") DHBW Mosbach
       br
@@ -13,13 +14,13 @@
 
 <script>
   export default {
-    name: 'Home',
+    name: 'Ueber',
     data () {
       return {
       }
     },
     metaInfo: {
-      title: 'Home'
+      title: 'Über'
     }
   }
 </script>
