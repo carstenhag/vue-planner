@@ -183,7 +183,7 @@
           let courseList = {}
           for (let line of lines) {
             let lineSplit = line.split(';')
-            if (lineSplit[0].length !== 0 && lineSplit !== 'CALENDARS') {
+            if (lineSplit[0].length !== 0 && lineSplit[0] !== 'CALENDARS') {
               courseList[lineSplit[0]] = lineSplit[1]
             }
           }
